@@ -1,0 +1,1006 @@
+.skills-page {
+  padding: 24px;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  color: #1e293b;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  margin-bottom: 24px;
+
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.title-block {
+  display: flex;
+  gap: 12px;
+}
+
+.brain-icon {
+  font-size: 28px;
+}
+
+.title-block h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.title-block p {
+  margin: 4px 0 0;
+  color: #64748b;
+  max-width: 520px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+.btn {
+  padding: 10px 16px;
+
+  border-radius: 8px;
+
+  font-weight: 500;
+
+  cursor: pointer;
+
+  border: 1px solid transparent;
+
+  font-family: inherit;
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.btn-primary:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.btn-outline {
+  background: #fff;
+  border-color: #cbd5e1;
+  color: #1e293b;
+}
+
+.btn-outline:hover {
+  background: #f8fafc;
+}
+
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+.error-banner {
+  background: #fee2e2;
+  color: #b91c1c;
+
+  padding: 10px 16px;
+
+  border-radius: 8px;
+
+  margin-bottom: 16px;
+}
+
+
+/* =====================================================
+   CONTENT
+===================================================== */
+
+.content-grid {
+  display: grid;
+
+  grid-template-columns: 1fr 340px;
+
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =====================================================
+   FILTERS
+===================================================== */
+
+.filters-row {
+  display: flex;
+
+  gap: 12px;
+
+  margin-bottom: 16px;
+}
+
+.search-input {
+  flex: 1;
+
+  padding: 10px 14px;
+
+  border-radius: 8px;
+
+  border: 1px solid #cbd5e1;
+}
+
+.category-select {
+  padding: 10px 14px;
+
+  border-radius: 8px;
+
+  border: 1px solid #cbd5e1;
+}
+
+
+/* =====================================================
+   TABLE
+===================================================== */
+
+.table-card {
+  background: #fff;
+
+  border-radius: 12px;
+
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+
+  overflow: hidden;
+}
+
+.skills-table {
+  width: 100%;
+
+  border-collapse: collapse;
+}
+
+.skills-table th {
+  text-align: left;
+
+  font-size: 12px;
+
+  color: #64748b;
+
+  padding: 14px 20px;
+
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.skills-table td {
+  padding: 14px 20px;
+
+  border-bottom: 1px solid #f1f5f9;
+
+  vertical-align: middle;
+}
+
+.skill-name-cell {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  font-weight: 500;
+}
+
+.skill-dot {
+  width: 10px;
+  height: 10px;
+
+  border-radius: 50%;
+
+  display: inline-block;
+}
+
+.badge {
+  padding: 4px 10px;
+
+  border-radius: 999px;
+
+  font-size: 12px;
+
+  font-weight: 600;
+}
+
+.stars {
+  color: #e2e8f0;
+
+  margin-right: 8px;
+}
+
+.stars span.filled {
+  color: #2563eb;
+}
+
+.level-label {
+  color: #64748b;
+
+  font-size: 13px;
+}
+
+.actions-cell {
+  display: flex;
+
+  gap: 8px;
+}
+
+.icon-btn {
+  border: none;
+
+  background: #f1f5f9;
+
+  border-radius: 50%;
+
+  width: 32px;
+  height: 32px;
+
+  cursor: pointer;
+}
+
+.icon-btn.danger {
+  background: #fee2e2;
+}
+
+.empty-state {
+  text-align: center;
+
+  padding: 40px;
+
+  color: #94a3b8;
+}
+
+.table-footer {
+  padding: 14px 20px;
+
+  color: #94a3b8;
+
+  font-size: 13px;
+}
+
+
+/* =====================================================
+   SIDE
+===================================================== */
+
+.side-col {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+.card {
+  background: #fff;
+
+  border-radius: 12px;
+
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+
+  padding: 20px;
+}
+
+.card h3 {
+  margin: 0 0 16px;
+
+  font-size: 15px;
+}
+
+.stat-row {
+  margin-bottom: 12px;
+}
+
+.stat-row-split {
+  display: flex;
+
+  justify-content: space-between;
+}
+
+.stat-value {
+  display: block;
+
+  font-size: 24px;
+
+  font-weight: 700;
+}
+
+.stat-value.accent {
+  color: #16a34a;
+}
+
+.stat-label {
+  font-size: 12px;
+
+  color: #64748b;
+}
+
+.donut-row {
+  display: flex;
+
+  align-items: center;
+
+  gap: 20px;
+}
+
+.donut {
+  width: 100px;
+  height: 100px;
+
+  border-radius: 50%;
+}
+
+.legend {
+  list-style: none;
+
+  padding: 0;
+
+  margin: 0;
+
+  font-size: 13px;
+}
+
+.legend li {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin-bottom: 6px;
+}
+
+.legend .dot {
+  width: 10px;
+  height: 10px;
+
+  border-radius: 50%;
+
+  display: inline-block;
+}
+
+.tip-card {
+  background: #eff6ff;
+
+  color: #1e40af;
+
+  padding: 16px;
+
+  border-radius: 12px;
+
+  font-size: 13px;
+}
+
+
+/* =====================================================
+   GENERAL MODAL
+===================================================== */
+
+.modal-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  background: rgba(0, 0, 0, .4);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  z-index: 9999;
+
+  padding: 20px;
+
+  overflow-y: auto;
+}
+
+.modal {
+  background: #fff;
+
+  border-radius: 12px;
+
+  padding: 24px;
+
+  width: 420px;
+
+  max-width: 90vw;
+}
+
+.modal label {
+  display: block;
+
+  margin-top: 12px;
+
+  font-size: 13px;
+
+  font-weight: 600;
+}
+
+.modal input,
+.modal select {
+  width: 100%;
+
+  padding: 10px;
+
+  margin-top: 4px;
+
+  border-radius: 8px;
+
+  border: 1px solid #cbd5e1;
+
+  box-sizing: border-box;
+}
+
+.modal-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 12px;
+
+  margin-top: 20px;
+}
+
+
+/* =====================================================
+   CV MODAL
+===================================================== */
+
+.cv-modal {
+  width: 520px;
+
+  max-width: calc(100vw - 40px);
+
+  max-height: 90vh;
+
+  overflow-y: auto;
+
+  padding: 24px;
+}
+
+
+/* =====================================================
+   CV HEADER
+===================================================== */
+
+.cv-modal-header {
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  gap: 16px;
+
+  margin-bottom: 20px;
+}
+
+.cv-modal-title {
+  display: flex;
+
+  gap: 12px;
+
+  align-items: flex-start;
+}
+
+.cv-modal-icon {
+  width: 44px;
+  height: 44px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: #eff6ff;
+
+  font-size: 24px;
+}
+
+.cv-modal-title h2 {
+  margin: 0 0 4px;
+
+  font-size: 17px;
+
+  font-weight: 700;
+
+  color: #1e293b;
+}
+
+.cv-modal-title p {
+  margin: 0;
+
+  font-size: 12.5px;
+
+  color: #64748b;
+
+  line-height: 1.4;
+}
+
+.cv-modal-close {
+  width: 32px;
+  height: 32px;
+
+  flex-shrink: 0;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: #f1f5f9;
+
+  color: #64748b;
+
+  font-size: 20px;
+
+  line-height: 1;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+}
+
+.cv-modal-close:hover {
+  background: #e2e8f0;
+
+  color: #1e293b;
+}
+
+
+/* =====================================================
+   CV DROPZONE
+===================================================== */
+
+.cv-dropzone {
+  position: relative;
+
+  border: 2px dashed #cbd5e1;
+
+  border-radius: 12px;
+
+  padding: 28px 20px;
+
+  text-align: center;
+
+  background: #f8fafc;
+
+  transition: .18s ease;
+}
+
+.cv-dropzone:hover {
+  border-color: #93c5fd;
+
+  background: #f0f7ff;
+}
+
+.cv-dropzone.dragging {
+  border-color: #2563eb;
+
+  background: #eff6ff;
+}
+
+.cv-dropzone.has-file {
+  padding: 16px;
+
+  text-align: left;
+
+  border-style: solid;
+
+  border-color: #bfdbfe;
+
+  background: #f0f7ff;
+}
+
+
+/* =====================================================
+   FILE INPUT
+===================================================== */
+
+/*
+  مهم:
+  ما نستعملوش hidden
+  ما نستعملوش display:none
+  ما نستعملوش pointer-events:none
+*/
+
+.cv-file-input {
+  display: block;
+
+  width: 100%;
+
+  margin-bottom: 14px;
+
+  font-size: 13px;
+
+  color: #475569;
+
+  cursor: pointer;
+}
+
+
+/* =====================================================
+   BROWSE BUTTON
+===================================================== */
+
+.cv-browse-btn {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 8px;
+
+  padding: 10px 16px;
+
+  border: 1px solid #2563eb;
+
+  border-radius: 8px;
+
+  background: #2563eb;
+
+  color: #fff;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  margin-bottom: 14px;
+}
+
+.cv-browse-btn:hover {
+  background: #1d4ed8;
+
+  border-color: #1d4ed8;
+}
+
+
+/* =====================================================
+   DROPZONE TEXT
+===================================================== */
+
+.cv-dropzone-icon {
+  font-size: 30px;
+
+  margin-bottom: 8px;
+}
+
+.cv-dropzone-title {
+  margin: 0 0 3px;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  color: #1e293b;
+}
+
+.cv-dropzone-sub {
+  margin: 0;
+
+  font-size: 12px;
+
+  color: #94a3b8;
+}
+
+
+/* =====================================================
+   SELECTED FILE
+===================================================== */
+
+.cv-file-pill {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  width: 100%;
+}
+
+.cv-file-icon {
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  background: #dbeafe;
+
+  font-size: 18px;
+}
+
+.cv-file-info {
+  flex: 1;
+
+  min-width: 0;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+.cv-file-info strong {
+  font-size: 13px;
+
+  color: #1e293b;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+.cv-file-info span {
+  font-size: 11.5px;
+
+  color: #64748b;
+}
+
+.cv-file-remove {
+  width: 28px;
+  height: 28px;
+
+  flex-shrink: 0;
+
+  border: none;
+
+  border-radius: 50%;
+
+  background: #fff;
+
+  color: #94a3b8;
+
+  cursor: pointer;
+}
+
+.cv-file-remove:hover {
+  background: #fee2e2;
+
+  color: #dc2626;
+}
+
+
+/* =====================================================
+   ANALYZE BUTTON
+===================================================== */
+
+.cv-analyze-btn {
+  width: 100%;
+
+  margin-top: 14px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 8px;
+}
+
+
+/* =====================================================
+   SPINNER
+===================================================== */
+
+.spinner {
+  width: 14px;
+  height: 14px;
+
+  border: 2px solid rgba(255, 255, 255, .4);
+
+  border-top-color: #fff;
+
+  border-radius: 50%;
+
+  animation: cv-spin .7s linear infinite;
+}
+
+@keyframes cv-spin {
+
+  to {
+    transform: rotate(360deg);
+  }
+
+}
+
+
+/* =====================================================
+   DETECTED SKILLS
+===================================================== */
+
+.detected-list {
+  margin-top: 20px;
+
+  padding-top: 16px;
+
+  border-top: 1px solid #f1f5f9;
+}
+
+.detected-list h4 {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin: 0 0 12px;
+
+  font-size: 13.5px;
+
+  color: #1e293b;
+}
+
+.detected-count {
+  background: #eff6ff;
+
+  color: #2563eb;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  padding: 1px 8px;
+
+  border-radius: 999px;
+}
+
+.detected-row {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 8px 10px;
+
+  border-radius: 8px;
+
+  margin-bottom: 6px;
+
+  background: #f8fafc;
+}
+
+.detected-row select {
+  width: auto;
+
+  margin-top: 0;
+
+  padding: 6px 10px;
+
+  font-size: 12.5px;
+}
+
+.detected-checkbox {
+  display: flex !important;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin: 0 !important;
+
+  font-size: 13px;
+
+  font-weight: 500;
+
+  color: #1e293b;
+}
+
+.detected-checkbox input[type="checkbox"] {
+  width: auto;
+
+  margin: 0;
+
+  accent-color: #2563eb;
+}
+
+
+/* =====================================================
+   CV ACTIONS
+===================================================== */
+
+.cv-actions {
+  margin-top: 20px;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 600px) {
+
+  .skills-page {
+    padding: 16px;
+  }
+
+  .header-row {
+    flex-direction: column;
+  }
+
+  .actions {
+    width: 100%;
+
+    flex-direction: column;
+  }
+
+  .actions .btn {
+    width: 100%;
+  }
+
+  .filters-row {
+    flex-direction: column;
+  }
+
+  .cv-modal {
+    width: 100%;
+
+    max-width: calc(100vw - 24px);
+
+    padding: 18px;
+  }
+
+  .detected-row {
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+  .detected-row select {
+    width: 100%;
+  }
+
+  .cv-actions {
+    flex-direction: column;
+  }
+
+  .cv-actions .btn {
+    width: 100%;
+  }
+
+}

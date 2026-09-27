@@ -1,0 +1,67 @@
+<div class="job-offers-page">
+
+  <div class="page-header">
+    <div>
+      <h1>Offres disponibles</h1>
+      <p class="subtitle">Découvrez les offres publiées et postulez en un clic.</p>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="text" placeholder="Rechercher une offre, une entreprise, une ville..."
+             #searchInput (input)="onSearch(searchInput.value)" />
+    </div>
+  </div>
+
+  <p *ngIf="loading" class="state-message">Chargement...</p>
+  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+
+  <div class="offers-grid" *ngIf="!loading && filteredOffers.length">
+    <div class="offer-card" *ngFor="let o of filteredOffers">
+
+      <div class="offer-card__top">
+        <div class="offer-card__avatar">{{ o.companyName.charAt(0) }}</div>
+        <span class="contract-badge">{{ o.contractType }}</span>
+      </div>
+
+      <h3 class="offer-card__title">{{ o.title }}</h3>
+
+      <div class="offer-card__meta">
+        <span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21V7l7-4 7 4v14"/><path d="M13 21v-6H9v6"/></svg>
+          {{ o.companyName }}
+        </span>
+        <span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          {{ o.location }}
+        </span>
+      </div>
+
+      <p class="offer-card__desc" *ngIf="o.description">{{ o.description }}</p>
+
+      <div class="skills-row" *ngIf="o.skills.length">
+        <span class="skill-chip" *ngFor="let s of o.skills.slice(0, 4)">{{ s.skillName }}</span>
+        <span class="skill-chip skill-chip--more" *ngIf="o.skills.length > 4">+{{ o.skills.length - 4 }}</span>
+      </div>
+
+      <p class="feedback-error" *ngIf="feedbackByOfferId[o.id]">{{ feedbackByOfferId[o.id] }}</p>
+
+      <div class="offer-card__footer">
+        <button class="btn btn--primary" style="width: 100%;"
+                [disabled]="hasApplied(o.id) || applyingId === o.id"
+                (click)="apply(o.id)">
+          <ng-container *ngIf="!hasApplied(o.id); else appliedTpl">
+            {{ applyingId === o.id ? 'Envoi...' : 'Postuler' }}
+          </ng-container>
+          <ng-template #appliedTpl>✓ Candidature envoyée</ng-template>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <p *ngIf="!loading && !filteredOffers.length" class="state-message">
+    Aucune offre disponible pour le moment.
+  </p>
+</div>

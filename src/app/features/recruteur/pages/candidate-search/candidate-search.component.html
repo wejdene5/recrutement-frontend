@@ -1,0 +1,60 @@
+<div class="candidate-search-page">
+  <div class="page-head">
+    <span class="breadcrumb">Espace Recruteur / Recherche de candidats</span>
+    <h2>Recherche en langage naturel</h2>
+    <p class="page-sub">Décrivez le profil recherché comme vous le feriez à un collègue.</p>
+  </div>
+
+  <div class="search-bar">
+    <input
+      type="text"
+      [(ngModel)]="query"
+      (keyup.enter)="search()"
+      placeholder="Ex. Développeur mobile Flutter à Tunis avec 2 ans d'expérience"
+    />
+    <button type="button" (click)="search()" [disabled]="loading || !query.trim()">
+      {{ loading ? 'Recherche...' : 'Rechercher' }}
+    </button>
+  </div>
+
+  <div class="examples" *ngIf="!hasSearched">
+    <span>Essayez :</span>
+    <button type="button" *ngFor="let ex of examples" (click)="useExample(ex)">{{ ex }}</button>
+  </div>
+
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+  <div class="detected-criteria" *ngIf="hasSearched && !errorMessage && hasCriteria()">
+    <span class="detected-label">Critères détectés :</span>
+    <span class="chip" *ngIf="detectedCriteria?.jobTitle">{{ detectedCriteria?.jobTitle }}</span>
+    <span class="chip" *ngIf="detectedCriteria?.location">📍 {{ detectedCriteria?.location }}</span>
+    <span class="chip" *ngIf="detectedCriteria?.minExperienceYears">
+      {{ detectedCriteria?.minExperienceYears }}+ ans
+    </span>
+    <span class="chip" *ngFor="let skill of detectedCriteria?.skills">{{ skill }}</span>
+  </div>
+
+  <div class="results" *ngIf="hasSearched && !errorMessage">
+    <p class="results-count" *ngIf="!loading">
+      {{ results.length }} candidat{{ results.length > 1 ? 's' : '' }} trouvé{{ results.length > 1 ? 's' : '' }}
+    </p>
+
+    <div class="candidate-card" *ngFor="let candidate of results">
+      <div class="candidate-main">
+        <p class="candidate-name">{{ candidate.fullName }}</p>
+        <p class="candidate-title">{{ candidate.currentTitle }}</p>
+      </div>
+      <div class="candidate-meta">
+        <span *ngIf="candidate.location">📍 {{ candidate.location }}</span>
+        <span *ngIf="candidate.yearsOfExperience">{{ candidate.yearsOfExperience }} ans d'expérience</span>
+      </div>
+      <div class="candidate-skills">
+        <span class="skill-tag" *ngFor="let skill of candidate.skills">{{ skill }}</span>
+      </div>
+    </div>
+
+    <p class="no-results" *ngIf="!loading && results.length === 0">
+      Aucun candidat ne correspond à cette recherche. Essayez une formulation plus large.
+    </p>
+  </div>
+</div>

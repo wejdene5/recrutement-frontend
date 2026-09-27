@@ -1,0 +1,12 @@
+<app-sidebar-manager
+  [isMobileOpen]="isMobileSidebarOpen"
+  (closeMobile)="closeMobileSidebar()"
+></app-sidebar-manager>
+
+<div class="layout-content">
+  <app-navbar-manager (toggleSidebar)="toggleMobileSidebar()"></app-navbar-manager>
+
+  <main class="page-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

@@ -1,0 +1,180 @@
+<div class="recruteurs-page">
+  <div class="panel">
+    <div class="panel__toolbar">
+      <div class="search-field">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M17 17L13.4 13.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <input
+          type="text"
+          placeholder="Rechercher un recruteur..."
+          [value]="searchTerm"
+          (input)="onSearchChange($any($event.target).value)"
+        />
+      </div>
+
+      <div class="select-field">
+        <label>Entreprise</label>
+        <select [value]="companyFilter" (change)="onCompanyFilterChange($any($event.target).value)">
+          <option value="ALL">Toutes</option>
+          <option *ngFor="let c of companies" [value]="c.name">{{ c.name }}</option>
+        </select>
+      </div>
+
+      <div class="select-field">
+        <label>Statut</label>
+        <select [value]="statusFilter" (change)="onStatusFilterChange($any($event.target).value)">
+          <option value="ALL">Tous</option>
+          <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
+        </select>
+      </div>
+
+      <button class="btn btn--primary" (click)="openModal()">
+        <span class="btn__icon">+</span> Ajouter un recruteur
+      </button>
+    </div>
+
+    <p *ngIf="loadError" class="error">{{ loadError }}</p>
+    <p *ngIf="loadingRecruteurs" class="state-message">Chargement des recruteurs...</p>
+
+    <div class="table-wrapper" *ngIf="!loadingRecruteurs && !loadError && filteredRecruteurs.length">
+      <table>
+        <thead>
+          <tr>
+            <th>Recruteur</th>
+            <th>Entreprise</th>
+            <th>Poste</th>
+            <th>Statut</th>
+            <th>Date de création</th>
+            <th class="actions-col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of filteredRecruteurs">
+            <td>
+              <div class="recruteur-cell">
+                <div class="avatar" [style.background]="avatarColor(r.firstName)">
+                  {{ initials(r.firstName, r.lastName) }}
+                </div>
+                <div>
+                  <p class="recruteur-cell__name">{{ r.firstName }} {{ r.lastName }}</p>
+                  <p class="recruteur-cell__meta">{{ r.email }}</p>
+                  <p class="recruteur-cell__meta" *ngIf="r.phoneNumber">{{ r.phoneNumber }}</p>
+                </div>
+              </div>
+            </td>
+
+            <td>
+              <div class="company-cell">
+                <div class="company-cell__icon" [style.background]="avatarColor(r.companyName || '')">
+                  {{ (r.companyName || '?').charAt(0) }}
+                </div>
+                <span>{{ r.companyName }}</span>
+              </div>
+            </td>
+
+            <td>{{ r.position || '—' }}</td>
+
+            <td>
+              <span class="badge"
+                    [class.badge--active]="r.status === 'ACTIVE'"
+                    [class.badge--pending]="r.status === 'PENDING'"
+                    [class.badge--inactive]="r.status === 'INACTIVE' || r.status === 'SUSPENDED'">
+                {{ r.status }}
+              </span>
+            </td>
+
+            <td>{{ r.createdAt | date:'dd MMM y' }}</td>
+
+            <td class="actions-col">
+              <div class="row-actions">
+                <a *ngIf="r.companyId" class="icon-btn" [routerLink]="['/manager/company', r.companyId]" title="Voir l'entreprise">
+                  <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1.5 10S4.5 4.5 10 4.5 18.5 10 18.5 10 15.5 15.5 10 15.5 1.5 10 1.5 10Z" stroke="currentColor" stroke-width="1.4"/>
+                    <circle cx="10" cy="10" r="2.4" stroke="currentColor" stroke-width="1.4"/>
+                  </svg>
+                </a>
+
+                <div class="dropdown" (click)="$event.stopPropagation()">
+                  <button class="icon-btn" (click)="toggleMenu(r.id, $event)" title="Actions" [disabled]="statusUpdatingId === r.id">
+                    {{ statusUpdatingId === r.id ? '…' : '⋮' }}
+                  </button>
+                  <div class="dropdown__menu" *ngIf="openMenuId === r.id">
+                    <button class="dropdown__item" (click)="openEditModal(r, $event)">
+                      Modifier
+                    </button>
+                    <button
+                      class="dropdown__item"
+                      *ngFor="let action of availableStatusActions(r.status)"
+                      (click)="changeStatus(r, action.status, $event)"
+                    >
+                      {{ action.label }}
+                    </button>
+                    <button class="dropdown__item dropdown__item--danger" (click)="deleteRecruteur(r.id, $event)">
+                      Supprimer
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="table-footer">
+        Affichage de 1 à {{ filteredRecruteurs.length }} sur {{ recruteurs.length }} recruteurs
+      </div>
+    </div>
+
+    <p *ngIf="!loadingRecruteurs && !loadError && !filteredRecruteurs.length" class="state-message">
+      Aucun recruteur ne correspond à votre recherche.
+    </p>
+  </div>
+
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <form class="modal" [formGroup]="form" (ngSubmit)="onSubmit()" (click)="$event.stopPropagation()">
+      <h3>{{ isEditMode ? 'Modifier le recruteur' : 'Ajouter un recruteur' }}</h3>
+
+      <label>Entreprise</label>
+      <select formControlName="companyId">
+        <option [ngValue]="null" disabled>Sélectionner une entreprise</option>
+        <option *ngFor="let c of companies" [ngValue]="c.id">{{ c.name }}</option>
+      </select>
+      <div class="hint" *ngIf="!loadingCompanies && !companies.length && !isEditMode">
+        Aucune entreprise disponible. Créez-en une d'abord.
+      </div>
+      <div class="hint" *ngIf="isEditMode">
+        L'entreprise ne peut pas être changée après création.
+      </div>
+
+      <label>Prénom</label>
+      <input type="text" formControlName="firstName" />
+
+      <label>Nom</label>
+      <input type="text" formControlName="lastName" />
+
+      <label>Email</label>
+      <input type="email" formControlName="email" />
+      <div class="hint" *ngIf="isEditMode">
+        L'adresse e-mail ne peut pas être modifiée ici.
+      </div>
+
+      <label>Téléphone</label>
+      <input type="text" formControlName="phoneNumber" />
+
+      <label>Poste</label>
+      <input type="text" formControlName="position" />
+
+      <p class="error" *ngIf="formError">{{ formError }}</p>
+      <p class="success" *ngIf="formSuccess">{{ formSuccess }}</p>
+
+      <div class="modal__actions">
+        <button type="button" class="btn btn--secondary" (click)="closeModal()">Annuler</button>
+        <button type="submit" class="btn btn--primary" [disabled]="submitting || (!isEditMode && !companies.length)">
+          {{ submitting ? (isEditMode ? 'Enregistrement...' : 'Création...') : (isEditMode ? 'Enregistrer' : 'Créer') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

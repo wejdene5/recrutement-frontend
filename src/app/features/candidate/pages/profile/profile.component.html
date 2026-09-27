@@ -1,0 +1,650 @@
+<div class="profile-container" *ngIf="!loading; else loadingTpl">
+
+
+  <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+  <div class="alert alert-success" *ngIf="successMessage">{{ successMessage }}</div>
+
+
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Mon Profil</h1>
+      <p>Consultez vos informations professionnelles enregistrées.</p>
+    </div>
+  </div>
+
+  <section class="profile-summary" *ngIf="candidate">
+
+    <div class="profile-main">
+
+      <div class="profile-avatar">
+    <img *ngIf="photoUrl; else avatarInitials"
+     [src]="photoUrl"
+     [alt]="fullName" />
+        <ng-template #avatarInitials>
+          <span class="avatar-initials">{{ initials }}</span>
+        </ng-template>
+
+        <label class="avatar-upload" [class.uploading]="uploadingPhoto">
+          <input type="file"
+                 accept="image/*"
+                 hidden
+                 (change)="onPhotoSelected($event)" />
+          <svg viewBox="0 0 24 24">
+            <path d="M12 20h9"></path>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+          </svg>
+        </label>
+      </div>
+
+      <div class="profile-info">
+        <div class="profile-name-row">
+          <h2>{{ fullName }}</h2>
+        </div>
+
+        <div class="profile-job" *ngIf="candidate.bio">
+          {{ candidate.bio }}
+        </div>
+
+        <div class="profile-meta">
+          <span *ngIf="location">
+            <svg viewBox="0 0 24 24">
+              <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"></path>
+              <circle cx="12" cy="10" r="2.5"></circle>
+            </svg>
+            {{ location }}
+          </span>
+
+          <span>
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+              <path d="m3 7 9 6 9-6"></path>
+            </svg>
+            {{ candidate.email }}
+          </span>
+
+          <span *ngIf="candidate.phoneNumber">
+            <svg viewBox="0 0 24 24">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92Z"></path>
+            </svg>
+            {{ candidate.phoneNumber }}
+          </span>
+        </div>
+      </div>
+
+      <button class="primary-button" type="button" (click)="openProfileModal()">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 20h9"></path>
+          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+        </svg>
+        Modifier mon profil
+      </button>
+    </div>
+
+    <div class="profile-stats">
+
+      <div class="stat-card">
+        <div class="stat-icon blue">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="7" width="18" height="13" rx="2"></rect>
+            <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <path d="M3 12h18"></path>
+            <path d="M10 12v2h4v-2"></path>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Expérience</span>
+          <strong>{{ totalExperienceYears }} an{{ totalExperienceYears > 1 ? 's' : '' }}</strong>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon blue">
+          <svg viewBox="0 0 24 24">
+            <rect x="4" y="4" width="6" height="6" rx="1"></rect>
+            <rect x="14" y="4" width="6" height="6" rx="1"></rect>
+            <rect x="4" y="14" width="6" height="6" rx="1"></rect>
+            <rect x="14" y="14" width="6" height="6" rx="1"></rect>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Compétences</span>
+          <strong>{{ candidate.skills?.length ?? 0 }}</strong>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <div class="profile-grid">
+
+  
+    <section class="card personal-card">
+      <div class="card-header">
+        <h2>Informations personnelles</h2>
+      </div>
+
+      <div class="personal-list">
+        <div class="personal-row">
+          <span class="row-label">Prénom</span>
+          <span class="row-value">{{ candidate?.firstName || '—' }}</span>
+        </div>
+        <div class="personal-row">
+          <span class="row-label">Nom</span>
+          <span class="row-value">{{ candidate?.lastName || '—' }}</span>
+        </div>
+        <div class="personal-row">
+          <span class="row-label">Email</span>
+          <span class="row-value">{{ candidate?.email || '—' }}</span>
+        </div>
+        <div class="personal-row">
+          <span class="row-label">Téléphone</span>
+          <span class="row-value">{{ candidate?.phoneNumber || '—' }}</span>
+        </div>
+        <div class="personal-row">
+          <span class="row-label">Adresse</span>
+          <span class="row-value">{{ candidate?.address || '—' }}</span>
+        </div>
+        <div class="personal-row">
+          <span class="row-label">Localisation</span>
+          <span class="row-value">{{ location || '—' }}</span>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="card professional-card">
+      <div class="card-header">
+        <h2>Profil professionnel</h2>
+      </div>
+
+      <div class="professional-list">
+        <div class="professional-row">
+          <span>À propos</span>
+          <strong>{{ candidate?.bio || '—' }}</strong>
+        </div>
+        <div class="professional-row">
+          <span>LinkedIn</span>
+          <strong>{{ candidate?.linkedinUrl || '—' }}</strong>
+        </div>
+        <div class="professional-row">
+          <span>GitHub</span>
+          <strong>{{ candidate?.githubUrl || '—' }}</strong>
+        </div>
+        <div class="professional-row">
+          <span>Portfolio</span>
+          <strong>{{ candidate?.portfolioUrl || '—' }}</strong>
+        </div>
+      </div>
+    </section>
+
+   
+    <section class="card experience-card">
+      <div class="card-header">
+        <h2>Expériences professionnelles</h2>
+        <button class="header-add-btn" type="button" (click)="openExperienceModal()">
+          + Ajouter une expérience
+        </button>
+      </div>
+
+      <p class="empty-state" *ngIf="!candidate?.experiences?.length">
+        Aucune expérience renseignée pour le moment.
+      </p>
+
+      <div class="timeline">
+        <div class="timeline-item"
+             *ngFor="let experience of candidate?.experiences; trackBy: trackByIndex">
+
+          <div class="timeline-dot"></div>
+
+          <div class="experience-content">
+            <div class="item-row-top">
+              <div class="experience-heading">
+                <strong>{{ experience.position }}</strong>
+                <span class="company">{{ experience.companyName }}</span>
+              </div>
+
+              <div class="item-actions">
+                <button type="button" class="icon-btn" title="Modifier"
+                        (click)="openExperienceModal(experience)">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 20h9"></path>
+                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+                  </svg>
+                </button>
+                <button type="button" class="icon-btn danger" title="Supprimer"
+                        (click)="deleteExperience(experience)">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M3 6h18"></path>
+                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="experience-date">
+              {{ experience.startDate | date:'MMM yyyy' }}
+              —
+              {{ experience.current ? 'Présent' : (experience.endDate | date:'MMM yyyy') }}
+            </div>
+
+            <p class="experience-description" *ngIf="experience.description">
+              {{ experience.description }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="card education-card">
+      <div class="card-header">
+        <h2>Formation</h2>
+        <button class="header-add-btn" type="button" (click)="openEducationModal()">
+          + Ajouter une formation
+        </button>
+      </div>
+
+      <p class="empty-state" *ngIf="!candidate?.educations?.length">
+        Aucune formation renseignée pour le moment.
+      </p>
+
+      <div class="education-list">
+        <div class="education-item"
+             *ngFor="let education of candidate?.educations; trackBy: trackByIndex">
+
+          <div class="education-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M22 10 12 5 2 10l10 5 10-5Z"></path>
+              <path d="M6 12v5c3 2 9 2 12 0v-5"></path>
+            </svg>
+          </div>
+
+          <div class="education-info">
+            <strong>{{ education.degree }}</strong>
+            <span>{{ education.university }}</span>
+            <span *ngIf="education.fieldOfStudy">{{ education.fieldOfStudy }}</span>
+          </div>
+
+          <div class="education-year">
+            {{ education.startDate | date:'yyyy' }} — {{ education.endDate ? (education.endDate | date:'yyyy') : 'Présent' }}
+          </div>
+
+          <div class="item-actions">
+            <button type="button" class="icon-btn" title="Modifier"
+                    (click)="openEducationModal(education)">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 20h9"></path>
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+              </svg>
+            </button>
+            <button type="button" class="icon-btn danger" title="Supprimer"
+                    (click)="deleteEducation(education)">
+              <svg viewBox="0 0 24 24">
+                <path d="M3 6h18"></path>
+                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="card languages-card">
+      <div class="card-header">
+        <h2>Langues</h2>
+        <button class="header-add-btn" type="button" (click)="openLanguageModal()">
+          + Ajouter une langue
+        </button>
+      </div>
+
+      <p class="empty-state" *ngIf="!candidate?.languages?.length">
+        Aucune langue renseignée pour le moment.
+      </p>
+
+      <div class="languages-list">
+        <div class="language-row"
+             *ngFor="let language of candidate?.languages; trackBy: trackByIndex">
+          <span class="language-name">{{ language.languageName }}</span>
+          <span class="language-level">{{ language.level }}</span>
+
+          <div class="item-actions">
+            <button type="button" class="icon-btn" title="Modifier"
+                    (click)="openLanguageModal(language)">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 20h9"></path>
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+              </svg>
+            </button>
+            <button type="button" class="icon-btn danger" title="Supprimer"
+                    (click)="deleteLanguage(language)">
+              <svg viewBox="0 0 24 24">
+                <path d="M3 6h18"></path>
+                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  
+    <section class="card skills-card">
+      <div class="skills-header">
+        <div class="skills-title">
+          <div class="skills-icon">
+            <svg viewBox="0 0 24 24">
+              <rect x="4" y="4" width="6" height="6" rx="1"></rect>
+              <rect x="14" y="4" width="6" height="6" rx="1"></rect>
+              <rect x="4" y="14" width="6" height="6" rx="1"></rect>
+              <rect x="14" y="14" width="6" height="6" rx="1"></rect>
+            </svg>
+          </div>
+          <div>
+            <h2>Skills Matrix</h2>
+            <p>Compétences issues de votre profil et/ou de l'analyse de votre CV.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="skills-table-header">
+        <span>Compétence</span>
+        <span>Niveau</span>
+        <span>Expertise</span>
+      </div>
+
+      <p class="empty-state" *ngIf="!candidate?.skills?.length">
+        Aucune compétence renseignée pour le moment.
+      </p>
+
+      <div class="skill-row"
+           *ngFor="let skill of candidate?.skills; trackBy: trackByIndex">
+
+        <div class="skill-name">{{ skill.skillName }}</div>
+
+        <span class="skill-level-badge">{{ skill.level }}</span>
+
+        <div class="skill-rating">
+          <span class="star"
+                *ngFor="let star of [1,2,3,4,5]"
+                [class.active]="star <= skillStars(skill.level)">★</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<ng-template #loadingTpl>
+  <div class="loading-state">Chargement de votre profil…</div>
+</ng-template>
+
+
+
+<div class="profile-modal-backdrop"
+     *ngIf="activeModal === 'profile'"
+     (click)="closeModal()">
+
+  <div class="profile-modal" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <div>
+        <span class="modal-kicker">MON PROFIL</span>
+        <h2>Modifier mon profil</h2>
+        <p>Mettez à jour vos informations personnelles et professionnelles.</p>
+      </div>
+
+      <button type="button" class="modal-close" (click)="closeModal()">×</button>
+    </div>
+
+    <form [formGroup]="profileForm"
+          class="modal-form"
+          (ngSubmit)="saveProfileFromModal()">
+
+      <div class="form-section-title">Informations personnelles</div>
+
+      <div class="form-grid">
+        <label>
+          <span>Prénom *</span>
+          <input formControlName="firstName" type="text">
+        </label>
+
+        <label>
+          <span>Nom *</span>
+          <input formControlName="lastName" type="text">
+        </label>
+
+        <label>
+          <span>Téléphone</span>
+          <input formControlName="phoneNumber" type="text">
+        </label>
+
+        <label>
+          <span>Adresse</span>
+          <input formControlName="address" type="text">
+        </label>
+
+        <label>
+          <span>Ville</span>
+          <input formControlName="city" type="text">
+        </label>
+
+        <label>
+          <span>Pays</span>
+          <input formControlName="country" type="text">
+        </label>
+      </div>
+
+      <div class="form-section-title">Profil professionnel</div>
+
+      <div class="form-grid">
+        <label class="full-width">
+          <span>À propos</span>
+          <textarea formControlName="bio" rows="4"></textarea>
+        </label>
+
+        <label>
+          <span>LinkedIn</span>
+          <input formControlName="linkedinUrl" type="url">
+        </label>
+
+        <label>
+          <span>GitHub</span>
+          <input formControlName="githubUrl" type="url">
+        </label>
+
+        <label class="full-width">
+          <span>Portfolio</span>
+          <input formControlName="portfolioUrl" type="url">
+        </label>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="modal-cancel" (click)="closeModal()">
+          Annuler
+        </button>
+
+        <button type="submit" class="modal-submit" [disabled]="saving">
+          {{ saving ? 'Enregistrement...' : 'Enregistrer' }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+
+
+<div class="profile-modal-backdrop"
+     *ngIf="activeModal === 'experience'"
+     (click)="closeModal()">
+
+  <div class="profile-modal" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <div>
+        <span class="modal-kicker">EXPÉRIENCE</span>
+        <h2>{{ isEditingExperience ? "Modifier l'expérience" : 'Ajouter une expérience' }}</h2>
+        <p>{{ isEditingExperience ? "Mettez à jour cette expérience professionnelle." : 'Ajoutez une nouvelle expérience professionnelle à votre profil.' }}</p>
+      </div>
+      <button type="button" class="modal-close" (click)="closeModal()">×</button>
+    </div>
+
+    <form [formGroup]="experienceForm" class="modal-form" (ngSubmit)="submitExperienceModal()">
+
+      <div class="form-grid">
+        <label>
+          <span>Poste *</span>
+          <input formControlName="position" type="text">
+        </label>
+
+        <label>
+          <span>Entreprise *</span>
+          <input formControlName="companyName" type="text">
+        </label>
+
+        <label>
+          <span>Date de début *</span>
+          <input formControlName="startDate" type="date">
+        </label>
+
+        <label>
+          <span>Date de fin</span>
+          <input formControlName="endDate" type="date">
+        </label>
+
+        <label class="full-width checkbox-row">
+          <input formControlName="current" type="checkbox">
+          <span>J'occupe actuellement ce poste</span>
+        </label>
+
+        <label class="full-width">
+          <span>Description</span>
+          <textarea formControlName="description" rows="4"></textarea>
+        </label>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="modal-cancel" (click)="closeModal()">Annuler</button>
+        <button type="submit" class="modal-submit" [disabled]="saving">
+          {{ saving ? 'Enregistrement...' : (isEditingExperience ? 'Enregistrer' : 'Ajouter') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+<div class="profile-modal-backdrop"
+     *ngIf="activeModal === 'education'"
+     (click)="closeModal()">
+
+  <div class="profile-modal" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <div>
+        <span class="modal-kicker">FORMATION</span>
+        <h2>{{ isEditingEducation ? 'Modifier la formation' : 'Ajouter une formation' }}</h2>
+        <p>{{ isEditingEducation ? 'Mettez à jour ce diplôme ou parcours académique.' : 'Ajoutez votre diplôme ou votre parcours académique.' }}</p>
+      </div>
+      <button type="button" class="modal-close" (click)="closeModal()">×</button>
+    </div>
+
+    <form [formGroup]="educationForm" class="modal-form" (ngSubmit)="submitEducationModal()">
+
+      <div class="form-grid">
+        <label>
+          <span>Diplôme *</span>
+          <input formControlName="degree" type="text">
+        </label>
+
+        <label>
+          <span>Établissement *</span>
+          <input formControlName="university" type="text">
+        </label>
+
+        <label>
+          <span>Domaine d'étude</span>
+          <input formControlName="fieldOfStudy" type="text">
+        </label>
+
+        <label>
+          <span>Niveau *</span>
+          <select formControlName="level">
+            <option value="" disabled>Sélectionner...</option>
+            <option *ngFor="let lvl of educationLevels" [value]="lvl">
+              {{ educationLevelLabels[lvl] }}
+            </option>
+          </select>
+        </label>
+
+        <label>
+          <span>Date de début *</span>
+          <input formControlName="startDate" type="date">
+        </label>
+
+        <label>
+          <span>Date de fin</span>
+          <input formControlName="endDate" type="date">
+        </label>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="modal-cancel" (click)="closeModal()">Annuler</button>
+        <button type="submit" class="modal-submit" [disabled]="saving">
+          {{ saving ? 'Enregistrement...' : (isEditingEducation ? 'Enregistrer' : 'Ajouter') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<div class="profile-modal-backdrop"
+     *ngIf="activeModal === 'language'"
+     (click)="closeModal()">
+
+  <div class="profile-modal" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <div>
+        <span class="modal-kicker">LANGUE</span>
+        <h2>{{ isEditingLanguage ? 'Modifier la langue' : 'Ajouter une langue' }}</h2>
+        <p>{{ isEditingLanguage ? 'Mettez à jour votre niveau dans cette langue.' : 'Ajoutez une langue et indiquez votre niveau.' }}</p>
+      </div>
+      <button type="button" class="modal-close" (click)="closeModal()">×</button>
+    </div>
+
+    <form [formGroup]="languageForm" class="modal-form" (ngSubmit)="submitLanguageModal()">
+
+      <div class="form-grid">
+        <label>
+          <span>Langue *</span>
+          <input formControlName="languageName" type="text">
+        </label>
+
+        <label>
+          <span>Niveau *</span>
+          <select formControlName="level">
+            <option value="" disabled>Sélectionner...</option>
+            <option *ngFor="let lvl of languageLevels" [value]="lvl">
+              {{ languageLevelLabels[lvl] }}
+            </option>
+          </select>
+        </label>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="modal-cancel" (click)="closeModal()">Annuler</button>
+        <button type="submit" class="modal-submit" [disabled]="saving">
+          {{ saving ? 'Enregistrement...' : (isEditingLanguage ? 'Enregistrer' : 'Ajouter') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,148 @@
+<div class="auth-page">
+  <div class="auth-card">
+
+    <!-- HEADER -->
+    <div class="auth-header">
+      <div class="auth-icon">
+        <svg
+          width="32"
+          height="32"
+          fill="none"
+          stroke="white"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+          />
+        </svg>
+      </div>
+
+      <h1>Bon retour !</h1>
+      <p>Connectez-vous à votre compte</p>
+    </div>
+
+    <!-- ERROR MESSAGE -->
+    <div
+      class="alert alert-error"
+      *ngIf="errorMessage"
+    >
+      {{ errorMessage }}
+    </div>
+
+    <!-- LOGIN FORM -->
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()"
+    >
+
+      <!-- EMAIL -->
+      <div class="form-group">
+        <label for="email">Email</label>
+
+        <input
+          id="email"
+          formControlName="email"
+          type="email"
+          placeholder="vous@exemple.com"
+          autocomplete="email"
+          [class.input-error]="
+            form.get('email')?.invalid &&
+            form.get('email')?.touched
+          "
+        />
+
+        <span
+          class="error-msg"
+          *ngIf="
+            form.get('email')?.invalid &&
+            form.get('email')?.touched
+          "
+        >
+          Email invalide
+        </span>
+      </div>
+
+      <!-- PASSWORD -->
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+
+        <div class="input-wrapper">
+
+          <input
+            id="password"
+            formControlName="password"
+            [type]="showPassword ? 'text' : 'password'"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            [class.input-error]="
+              form.get('password')?.invalid &&
+              form.get('password')?.touched
+            "
+          />
+
+          <!-- SHOW / HIDE PASSWORD -->
+          <button
+            type="button"
+            class="toggle-pwd"
+            (click)="showPassword = !showPassword"
+            [attr.aria-label]="
+              showPassword
+                ? 'Masquer le mot de passe'
+                : 'Afficher le mot de passe'
+            "
+          >
+            <span *ngIf="!showPassword">👁️</span>
+            <span *ngIf="showPassword">🙈</span>
+          </button>
+
+        </div>
+
+        <span
+          class="error-msg"
+          *ngIf="
+            form.get('password')?.invalid &&
+            form.get('password')?.touched
+          "
+        >
+          Minimum 8 caractères
+        </span>
+      </div>
+
+      <!-- FORGOT PASSWORD -->
+      <div class="forgot-link">
+        <a routerLink="/auth/forget-password">
+          Mot de passe oublié ?
+        </a>
+      </div>
+
+      <!-- LOGIN BUTTON -->
+      <button
+        type="submit"
+        class="btn-primary"
+        [disabled]="loading || form.invalid"
+      >
+
+        <span
+          class="spinner"
+          *ngIf="loading"
+        ></span>
+
+        {{ loading ? 'Connexion...' : 'Se connecter' }}
+
+      </button>
+
+    </form>
+
+    <!-- REGISTER LINK -->
+    <p class="auth-footer">
+      Pas encore de compte ?
+      <a routerLink="/auth/register">
+        S'inscrire
+      </a>
+    </p>
+
+  </div>
+</div>

@@ -1,0 +1,273 @@
+<div class="profile-container" *ngIf="!loadingProfile; else loadingTpl">
+
+  <div class="alert alert-error" *ngIf="profileError">{{ profileError }}</div>
+  <div class="alert alert-success" *ngIf="profileSuccess">{{ profileSuccess }}</div>
+
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Mon Profil</h1>
+      <p>Consultez et modifiez vos informations professionnelles.</p>
+    </div>
+  </div>
+
+
+  <section class="profile-summary" *ngIf="profile">
+
+    <div class="profile-main">
+
+      <div class="profile-avatar">
+        <img *ngIf="profile.photoUrl; else avatarInitials"
+             [src]="profile.photoUrl"
+             [alt]="profile.name" />
+        <ng-template #avatarInitials>
+          <span class="avatar-initials">{{ initials }}</span>
+        </ng-template>
+
+        <button class="avatar-upload" type="button" title="Changer la photo">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 20h9"></path>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="profile-info">
+        <div class="profile-name-row">
+          <h2>{{ profile.name }}</h2>
+          <span class="role-badge">Manager</span>
+        </div>
+
+        <div class="profile-job" *ngIf="profile.bio">{{ profile.bio }}</div>
+        <div class="profile-job muted" *ngIf="!profile.bio">
+          Responsable de la gestion des entreprises et des recruteurs.
+        </div>
+
+        <div class="profile-meta">
+          <span *ngIf="profile.department">
+            <svg viewBox="0 0 24 24">
+              <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"></path>
+              <circle cx="12" cy="10" r="2.5"></circle>
+            </svg>
+            {{ profile.department }}
+          </span>
+
+          <span>
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+              <path d="m3 7 9 6 9-6"></path>
+            </svg>
+            {{ profile.email }}
+          </span>
+
+          <span *ngIf="profile.phoneNumber">
+            <svg viewBox="0 0 24 24">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92Z"></path>
+            </svg>
+            {{ profile.phoneNumber }}
+          </span>
+        </div>
+      </div>
+
+      <button class="primary-button" type="button" (click)="toggleEditMode()">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 20h9"></path>
+          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+        </svg>
+        Modifier mon profil
+      </button>
+    </div>
+
+    <div class="profile-stats">
+      <div class="stat-card">
+        <div class="stat-icon blue">
+          <svg viewBox="0 0 24 24">
+            <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"></path>
+            <circle cx="12" cy="10" r="2.5"></circle>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Poste</span>
+          <strong>{{ profile.position || '—' }}</strong>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon blue">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+            <path d="M16 2v4"></path>
+            <path d="M8 2v4"></path>
+            <path d="M3 10h18"></path>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Membre depuis</span>
+          <strong>{{ profile.createdAt | date:'MMM y' }}</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="profile-grid">
+
+  
+    <section class="card personal-card">
+      <div class="card-header">
+        <h2>Informations personnelles</h2>
+      </div>
+
+      <div class="personal-list">
+        <div class="personal-row">
+          <span class="row-label">Nom complet</span>
+          <span class="row-value">{{ profile?.name || '—' }}</span>
+        </div>
+        <div class="personal-row">
+          <span class="row-label">Poste</span>
+          <span class="row-value">{{ profile?.position || '—' }}</span>
+        </div>
+        <div class="personal-row">
+          <span class="row-label">Email</span>
+          <span class="row-value">{{ profile?.email || '—' }}</span>
+        </div>
+        <div class="personal-row">
+          <span class="row-label">Département</span>
+          <span class="row-value">{{ profile?.department || '—' }}</span>
+        </div>
+        <div class="personal-row">
+          <span class="row-label">Téléphone</span>
+          <span class="row-value">{{ profile?.phoneNumber || '—' }}</span>
+        </div>
+        <div class="personal-row">
+          <span class="row-label">Date d'inscription</span>
+          <span class="row-value">{{ profile?.createdAt | date:'d MMMM y' }}</span>
+        </div>
+      </div>
+    </section>
+
+  
+    <section class="card security-card">
+      <div class="card-header">
+        <h2>Préférences et sécurité</h2>
+      </div>
+
+      <div class="tiles-grid">
+        <button class="tile" type="button" (click)="togglePasswordPanel()">
+          <span class="tile-icon purple">
+            <svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+          </span>
+          <span class="tile-text">
+            <strong>Changer le mot de passe</strong>
+            <small>Mettez à jour votre mot de passe</small>
+          </span>
+          <span class="tile-arrow">›</span>
+        </button>
+
+        <button class="tile" type="button">
+          <span class="tile-icon green">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"></path></svg>
+          </span>
+          <span class="tile-text">
+            <strong>Sécurité du compte</strong>
+            <small>Gérez la sécurité de votre compte</small>
+          </span>
+          <span class="tile-arrow">›</span>
+        </button>
+
+        <button class="tile" type="button">
+          <span class="tile-icon orange">
+            <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          </span>
+          <span class="tile-text">
+            <strong>Préférences de notifications</strong>
+            <small>Choisissez ce que vous souhaitez recevoir</small>
+          </span>
+          <span class="tile-arrow">›</span>
+        </button>
+      </div>
+
+      <div class="password-panel" *ngIf="showPasswordPanel">
+        <div class="alert alert-success" *ngIf="passwordSuccess">{{ passwordSuccess }}</div>
+        <div class="alert alert-error" *ngIf="passwordError">{{ passwordError }}</div>
+
+        <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
+          <div class="form-grid">
+            <label class="full-width">
+              <span>Mot de passe actuel</span>
+              <input formControlName="currentPassword" type="password" />
+            </label>
+            <label class="full-width">
+              <span>Nouveau mot de passe</span>
+              <input formControlName="newPassword" type="password" />
+            </label>
+          </div>
+
+          <div class="modal-footer no-border">
+            <button type="submit" class="modal-submit" [disabled]="savingPassword || passwordForm.invalid">
+              {{ savingPassword ? 'Modification...' : 'Changer le mot de passe' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </div>
+
+</div>
+
+<ng-template #loadingTpl>
+  <div class="loading-state">Chargement du profil…</div>
+</ng-template>
+
+<div class="profile-modal-backdrop" *ngIf="editMode" (click)="toggleEditMode()">
+  <div class="profile-modal" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <div>
+        <span class="modal-kicker">MON PROFIL</span>
+        <h2>Modifier mon profil</h2>
+        <p>Mettez à jour vos informations personnelles et professionnelles.</p>
+      </div>
+      <button type="button" class="modal-close" (click)="toggleEditMode()">×</button>
+    </div>
+
+    <form [formGroup]="profileForm" class="modal-form" (ngSubmit)="onSaveProfile()">
+
+      <div class="form-section-title">Informations personnelles</div>
+
+      <div class="form-grid">
+        <label>
+          <span>Nom complet</span>
+          <input formControlName="name" type="text">
+        </label>
+
+        <label>
+          <span>Téléphone</span>
+          <input formControlName="phoneNumber" type="text">
+        </label>
+
+        <label>
+          <span>Poste</span>
+          <input formControlName="position" type="text" placeholder="ex: Directeur RH">
+        </label>
+
+        <label>
+          <span>Département</span>
+          <input formControlName="department" type="text" placeholder="ex: Ressources Humaines">
+        </label>
+
+        <label class="full-width">
+          <span>Bio</span>
+          <textarea formControlName="bio" rows="4" placeholder="Présentez-vous en quelques mots..."></textarea>
+          <span class="char-count">{{ bioLength }}/1000</span>
+        </label>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="modal-cancel" (click)="toggleEditMode()">Annuler</button>
+        <button type="submit" class="modal-submit" [disabled]="savingProfile || profileForm.invalid">
+          {{ savingProfile ? 'Enregistrement...' : 'Enregistrer' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

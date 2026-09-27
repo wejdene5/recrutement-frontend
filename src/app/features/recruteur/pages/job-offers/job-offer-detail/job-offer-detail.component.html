@@ -1,0 +1,368 @@
+<div class="offer-detail-page">
+
+  <button class="back-link" (click)="goBack()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+    Retour aux offres
+  </button>
+
+  <p *ngIf="loading" class="state-message">Chargement...</p>
+  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+
+  <ng-container *ngIf="!loading && offer">
+
+    <div class="detail-layout">
+
+     
+      <div class="detail-main">
+
+        <div class="detail-header">
+          <div class="detail-header__top">
+            <span class="badge" [ngClass]="statusClass(offer.status)">{{ statusLabel(offer.status) }}</span>
+
+            <div class="header-actions">
+              <button class="btn btn--outline" (click)="goToEdit()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                Modifier
+              </button>
+
+              <div class="header-menu">
+                <button class="btn btn--icon" (click)="toggleMenu(); $event.stopPropagation()" aria-label="Plus d'options">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
+                </button>
+
+                <div class="header-menu__dropdown" *ngIf="menuOpen">
+                  <button (click)="duplicateOffer()" [disabled]="duplicating">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+                    {{ duplicating ? 'Duplication...' : "Dupliquer l'offre" }}
+                  </button>
+                  <button (click)="togglePublishPause()" [disabled]="actionPending" *ngIf="offer.status !== 'FERMEE' && offer.status !== 'EXPIREE'">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                    {{ offer.status === 'PUBLIEE' ? 'Mettre en pause' : "Publier l'offre" }}
+                  </button>
+                  <button class="header-menu__danger" (click)="askDelete()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+                    Supprimer l'offre
+                  </button>
+                </div>
+              </div>
+
+              <button class="btn btn--primary" [disabled]="boosting" (click)="boostOffer()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+                {{ boosting ? 'Boost en cours...' : "Booster l'offre" }}
+              </button>
+            </div>
+          </div>
+
+          <h1>{{ offer.title }}</h1>
+
+          <div class="detail-header__meta">
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21V7l7-4 7 4v14"/><path d="M13 21v-6H9v6"/></svg>
+              {{ offer.companyName }}
+            </span>
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+              {{ offer.location }}
+            </span>
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+              {{ offer.contractType }}
+            </span>
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+              {{ daysAgoLabel() }}
+            </span>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <button class="tab" [class.tab--active]="activeTab === 'description'" (click)="setTab('description')">
+            Description
+          </button>
+          <button class="tab" [class.tab--active]="activeTab === 'candidates'" (click)="setTab('candidates')">
+            Candidatures {{ candidatesLoaded ? '(' + candidates.length + ')' : '' }}
+          </button>
+          <button class="tab" [class.tab--active]="activeTab === 'matching'" (click)="setTab('matching')">
+            Matching
+          </button>
+          <button class="tab" [class.tab--active]="activeTab === 'stats'" (click)="setTab('stats')">
+            Statistiques
+          </button>
+          <button class="tab" [class.tab--active]="activeTab === 'history'" (click)="setTab('history')">
+            Historique
+          </button>
+        </div>
+
+      
+        <div class="tab-content" *ngIf="activeTab === 'description'">
+          <section>
+            <h2>À propos du poste</h2>
+            <p class="rich-text">{{ offer.description }}</p>
+          </section>
+
+          <section *ngIf="offer.skills.length">
+            <h2>Compétences requises</h2>
+            <div class="skills-row">
+              <span class="skill-chip" *ngFor="let s of offer.skills">
+                {{ s.skillName }}<span *ngIf="s.required"> (requis)</span>
+              </span>
+            </div>
+          </section>
+
+          <section>
+            <h2>Informations complémentaires</h2>
+            <div class="info-pair">
+              <div>
+                <span class="info-pair__label">Niveau d'expérience</span>
+                <span class="info-pair__value">{{ experienceLabel() }}</span>
+              </div>
+              <div>
+                <span class="info-pair__label">Langues</span>
+                <span class="info-pair__value">{{ languagesLabel() }}</span>
+              </div>
+            </div>
+          </section>
+        </div>
+
+  
+        <div class="tab-content" *ngIf="activeTab === 'candidates'">
+          <p *ngIf="candidatesLoading" class="state-message">Chargement des candidatures...</p>
+          <div class="score-filter" *ngIf="!candidatesLoading">
+            <label>Score minimum</label>
+            <select [value]="minScoreFilter" (change)="onMinScoreChange($any($event.target).value)">
+              <option value="0">Tous les scores</option>
+              <option value="50">≥ 50%</option>
+              <option value="65">≥ 65%</option>
+              <option value="70">≥ 70%</option>
+              <option value="80">≥ 80%</option>
+            </select>
+          </div>
+          <div class="candidate-row" *ngFor="let c of candidates">
+            <div class="candidate-row__avatar">
+              <img *ngIf="c.photoUrl && !brokenPhotoIds.has(c.applicationId)"
+                   [src]="c.photoUrl"
+                   alt=""
+                   (error)="onAvatarError(c.applicationId)" />
+              <span *ngIf="!c.photoUrl || brokenPhotoIds.has(c.applicationId)">
+                {{ c.firstName.charAt(0) }}{{ c.lastName.charAt(0) }}
+              </span>
+            </div>
+
+            <div class="candidate-row__info">
+              <strong>{{ c.firstName }} {{ c.lastName }}</strong>
+              <span class="candidate-row__meta">
+                {{ c.email }}<span *ngIf="c.city"> · {{ c.city }}</span>
+              </span>
+              <span class="candidate-row__meta">
+                {{ c.matchedSkillsCount }}/{{ c.totalSkillsCount }} compétences correspondantes
+              </span>
+            </div>
+
+            <div class="candidate-row__score">
+              <div class="candidate-row__score-ring" [ngClass]="scoreClass(c.matchScore)"
+                   [style.--score]="c.matchScore">
+                <div class="ring-inner">
+                  <span class="ring-value">{{ c.matchScore }}%</span>
+                </div>
+              </div>
+              <span class="score-tag" [ngClass]="scoreClass(c.matchScore)">{{ scoreLabel(c.matchScore) }}</span>
+            </div>
+
+            <div class="candidate-row__status">
+              <select class="status-select" [ngClass]="'status--' + c.status"
+                      [value]="c.status" (change)="updateCandidateStatus(c.applicationId, $any($event.target).value)">
+                <option value="EN_ATTENTE">En attente</option>
+                <option value="ACCEPTEE">Acceptée</option>
+                <option value="REFUSEE">Refusée</option>
+              </select>
+            </div>
+          </div>
+
+          <p *ngIf="!candidatesLoading && candidates.length === 0" class="state-message">
+            Aucune candidature ne correspond à ce filtre.
+          </p>
+        </div>
+
+       
+        <div class="tab-content" *ngIf="activeTab === 'matching'">
+          <p *ngIf="candidatesLoading" class="state-message">Analyse du matching en cours...</p>
+
+          <div class="matching-summary" *ngIf="!candidatesLoading && candidates.length">
+            <p class="matching-summary__intro">
+              Classement des {{ candidates.length }} candidat(s) par compatibilité avec les compétences requises de cette offre.
+            </p>
+
+            <div class="matching-card" *ngFor="let c of sortedCandidatesByScore">
+              <div class="matching-card__header">
+                <div class="matching-card__identity">
+                  <strong>{{ c.firstName }} {{ c.lastName }}</strong>
+                  <span class="candidate-row__meta">{{ c.email }}</span>
+                </div>
+                <div class="candidate-row__score-ring" [ngClass]="scoreClass(c.matchScore)">
+                  <div class="ring-inner">
+                    <span class="ring-value">{{ c.matchScore }}%</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="matching-card__skills">
+                <div class="skill-group skill-group--matched" *ngIf="c.matchedSkillNames.length">
+                  <span class="skill-group__label">✓ Compétences correspondantes</span>
+                  <div class="skill-chips">
+                    <span class="skill-chip skill-chip--matched" *ngFor="let s of c.matchedSkillNames">{{ s }}</span>
+                  </div>
+                </div>
+
+                <div class="skill-group skill-group--missing" *ngIf="c.missingSkillNames.length">
+                  <span class="skill-group__label">✕ Compétences manquantes</span>
+                  <div class="skill-chips">
+                    <span class="skill-chip skill-chip--missing" *ngFor="let s of c.missingSkillNames">{{ s }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p *ngIf="!candidatesLoading && candidates.length === 0" class="state-message">
+            Aucune candidature à analyser pour le moment.
+          </p>
+        </div>
+
+        <div class="tab-content tab-content--empty" *ngIf="activeTab === 'stats'">
+          Les statistiques de l'offre arrivent bientôt.
+        </div>
+        <div class="tab-content tab-content--empty" *ngIf="activeTab === 'history'">
+          L'historique des actions sur l'offre arrive bientôt.
+        </div>
+
+      </div>
+
+     
+      <aside class="detail-sidebar">
+        <div class="card">
+          <h3>Détails de l'offre</h3>
+
+          <div class="detail-row">
+            <div class="detail-row__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+            </div>
+            <div>
+              <span class="detail-row__label">Type de contrat</span>
+              <span class="detail-row__value">{{ offer.contractType }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-row__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+            </div>
+            <div>
+              <span class="detail-row__label">Niveau d'expérience</span>
+              <span class="detail-row__value">{{ experienceLabel() }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-row__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5M16 4v5"/></svg>
+            </div>
+            <div>
+              <span class="detail-row__label">Secteur</span>
+              <span class="detail-row__value">{{ sectorLabel() }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-row__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <div>
+              <span class="detail-row__label">Salaire</span>
+              <span class="detail-row__value">{{ salaryLabel() }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-row__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            </div>
+            <div>
+              <span class="detail-row__label">Localisation</span>
+              <span class="detail-row__value">{{ offer.location }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-row__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 16.5a4.5 4.5 0 0 0-1.5-8.7 6 6 0 0 0-11.4-1.8A5 5 0 0 0 6 15.5"/><path d="M12 12v6"/><path d="M9 15l3 3 3-3"/></svg>
+            </div>
+            <div>
+              <span class="detail-row__label">Mode de travail</span>
+              <span class="detail-row__value">{{ workModeLabel() }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-row__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+            </div>
+            <div>
+              <span class="detail-row__label">Date de publication</span>
+              <span class="detail-row__value">{{ offer.createdAt | date:'dd MMMM y' }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row" *ngIf="offer.expiryDate">
+            <div class="detail-row__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+            </div>
+            <div>
+              <span class="detail-row__label">Date limite</span>
+              <span class="detail-row__value">{{ offer.expiryDate | date:'dd MMMM y' }}</span>
+            </div>
+          </div>
+
+          <a class="btn btn--outline btn--block" [href]="publicOfferUrl()" target="_blank" rel="noopener">
+            Voir l'offre publique
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>
+          </a>
+        </div>
+
+        <div class="card">
+          <h3>Actions rapides</h3>
+
+          <button class="quick-action" (click)="goToEdit()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+            Modifier l'offre
+          </button>
+
+          <button class="quick-action" [disabled]="duplicating" (click)="duplicateOffer()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            {{ duplicating ? 'Duplication...' : "Dupliquer l'offre" }}
+          </button>
+
+          <button class="quick-action" [disabled]="actionPending" *ngIf="offer.status !== 'FERMEE' && offer.status !== 'EXPIREE'" (click)="togglePublishPause()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+            {{ offer.status === 'PUBLIEE' ? 'Mettre en pause' : "Publier l'offre" }}
+          </button>
+
+          <button class="quick-action quick-action--danger" (click)="askDelete()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+            Supprimer l'offre
+          </button>
+        </div>
+      </aside>
+    </div>
+  </ng-container>
+
+ 
+  <div class="modal-overlay" *ngIf="deleteConfirmOpen" (click)="cancelDelete()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <p>Êtes-vous sûr de vouloir supprimer cette offre ?</p>
+      <div class="modal__actions">
+        <button (click)="cancelDelete()">Annuler</button>
+        <button class="danger" (click)="confirmDelete()">Supprimer</button>
+      </div>
+    </div>
+  </div>
+</div>

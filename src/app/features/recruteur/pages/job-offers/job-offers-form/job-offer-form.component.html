@@ -1,0 +1,128 @@
+<div class="job-offer-form-page">
+  <div class="page-head">
+    <span class="breadcrumb">Espace Recruteur / Offres d'emploi</span>
+    <h2>{{ isEditMode ? "Modifier la Job Offer" : "Ajouter une Job Offer" }}</h2>
+    <p class="page-sub">Renseignez les détails du poste — l'aperçu à droite se met à jour au fur et à mesure.</p>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="offer-form">
+    <div class="offer-grid">
+
+    
+      <div class="form-main">
+
+        <div class="field">
+          <label>Titre</label>
+          <input type="text" formControlName="title" placeholder="Ex. Développeur mobile Flutter" />
+        </div>
+
+        <div class="field">
+          <div class="description-header">
+            <label>Description</label>
+            <button type="button" class="btn-ai" [disabled]="generatingDescription" (click)="generateDescription()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/>
+              </svg>
+              {{ generatingDescription ? 'Génération en cours...' : "Générer avec l'IA" }}
+            </button>
+          </div>
+          <p class="ai-error" *ngIf="aiError">{{ aiError }}</p>
+          <textarea formControlName="description" rows="8"></textarea>
+        </div>
+
+        <div class="field two-up">
+          <div>
+            <label>Localisation</label>
+            <input type="text" formControlName="location" placeholder="Ex. Tunis, Tunisie" />
+          </div>
+          <div>
+            <label>Type de contrat</label>
+            <select formControlName="contractType">
+              <option *ngFor="let ct of contractTypes" [value]="ct">{{ ct }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field two-up">
+          <div>
+            <label>Fourchette salariale (DT)</label>
+            <div class="salary-range">
+              <input type="number" formControlName="salaryMin" placeholder="Min" />
+              <span class="dash">–</span>
+              <input type="number" formControlName="salaryMax" placeholder="Max" />
+            </div>
+          </div>
+          <div>
+            <label>Années d'expérience</label>
+            <input type="number" formControlName="experienceYears" placeholder="Ex. 2" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Date limite</label>
+          <input type="date" formControlName="expiryDate" />
+        </div>
+
+        <div class="skills-section" formArrayName="skills">
+          <div class="skills-header">
+            <label>Compétences</label>
+            <button type="button" (click)="addSkill()">+ Ajouter une compétence</button>
+          </div>
+
+          <p class="skills-empty" *ngIf="skills.controls.length === 0">
+            Aucune compétence ajoutée pour le moment.
+          </p>
+
+          <div *ngFor="let skill of skills.controls; let i = index" [formGroupName]="i" class="skill-row">
+            <input type="text" formControlName="skillName" placeholder="Nom de la compétence" />
+            <label><input type="checkbox" formControlName="required" /> Requise</label>
+            <input type="number" formControlName="weight" placeholder="Poids" />
+            <button type="button" class="danger" (click)="removeSkill(i)" aria-label="Supprimer la compétence">✕</button>
+          </div>
+        </div>
+
+      </div>
+
+    
+      <aside class="form-aside">
+        <div class="preview-card">
+          <p class="preview-label">Aperçu candidat</p>
+          <p class="preview-title">{{ form.value.title || 'Titre du poste' }}</p>
+          <div class="preview-badges">
+            <span>{{ form.value.contractType || 'Type de contrat' }}</span>
+            <span *ngIf="form.value.location">{{ form.value.location }}</span>
+          </div>
+          <dl>
+            <div class="preview-row">
+              <dt>Salaire</dt>
+              <dd>{{ form.value.salaryMin || '—' }} – {{ form.value.salaryMax || '—' }} DT</dd>
+            </div>
+            <div class="preview-row">
+              <dt>Expérience</dt>
+              <dd>{{ form.value.experienceYears ? form.value.experienceYears + ' ans' : '—' }}</dd>
+            </div>
+            <div class="preview-row">
+              <dt>Compétences</dt>
+              <dd>{{ skills.controls.length || 0 }}</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="aside-card">
+          <p class="aside-title">Astuce</p>
+          <p style="font-size: 13px; color: var(--muted); margin: 0; line-height: 1.5;">
+            Utilisez "Générer avec l'IA" pour obtenir une description structurée à partir du titre du poste, puis ajustez-la selon vos besoins.
+          </p>
+        </div>
+      </aside>
+
+    </div>
+
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+    <div class="form-actions">
+      <button type="button" (click)="cancel()">Annuler</button>
+      <button type="submit" [disabled]="loading">{{ loading ? 'Enregistrement...' : 'Enregistrer' }}</button>
+    </div>
+  </form>
+</div>

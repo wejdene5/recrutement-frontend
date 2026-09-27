@@ -1,0 +1,99 @@
+<div class="recruteur-form-page">
+  <div class="recruteur-form-card">
+
+    <div class="recruteur-form-card__header">
+      <h2>Ajouter un recruteur</h2>
+      <p>Le recruteur recevra ses identifiants de connexion par e-mail.</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+      <div class="form-row form-row--split">
+        <div class="field">
+          <label for="firstName">Prénom</label>
+          <input
+            id="firstName"
+            type="text"
+            formControlName="firstName"
+            placeholder="Ex. Amine"
+            [class.field--invalid]="form.get('firstName')?.invalid && form.get('firstName')?.touched"
+          />
+          <span class="field__error" *ngIf="form.get('firstName')?.invalid && form.get('firstName')?.touched">
+            Le prénom est requis.
+          </span>
+        </div>
+
+        <div class="field">
+          <label for="lastName">Nom</label>
+          <input
+            id="lastName"
+            type="text"
+            formControlName="lastName"
+            placeholder="Ex. Trabelsi"
+            [class.field--invalid]="form.get('lastName')?.invalid && form.get('lastName')?.touched"
+          />
+          <span class="field__error" *ngIf="form.get('lastName')?.invalid && form.get('lastName')?.touched">
+            Le nom est requis.
+          </span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="email">Adresse e-mail professionnelle</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="prenom.nom@entreprise.com"
+          [class.field--invalid]="form.get('email')?.invalid && form.get('email')?.touched"
+        />
+        <span class="field__error" *ngIf="form.get('email')?.hasError('required') && form.get('email')?.touched">
+          L'adresse e-mail est requise.
+        </span>
+        <span class="field__error" *ngIf="form.get('email')?.hasError('email') && form.get('email')?.touched">
+          Adresse e-mail invalide.
+        </span>
+      </div>
+
+      <div class="form-row form-row--split">
+        <div class="field">
+          <label for="phoneNumber">Téléphone</label>
+          <input
+            id="phoneNumber"
+            type="text"
+            formControlName="phoneNumber"
+            placeholder="+216 XX XXX XXX"
+          />
+        </div>
+
+        <div class="field">
+          <label for="position">Poste</label>
+          <input
+            id="position"
+            type="text"
+            formControlName="position"
+            placeholder="Ex. Chargé de recrutement"
+          />
+        </div>
+      </div>
+
+      <div class="banner banner--error" *ngIf="errorMessage">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>
+        {{ errorMessage }}
+      </div>
+
+      <div class="banner banner--success" *ngIf="successMessage">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+        {{ successMessage }}
+      </div>
+
+      <button type="submit" class="submit-btn" [disabled]="loading">
+        <svg *ngIf="loading" class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <circle cx="12" cy="12" r="9" opacity="0.25"/>
+          <path d="M21 12a9 9 0 0 0-9-9"/>
+        </svg>
+        {{ loading ? 'Création en cours...' : 'Créer le compte' }}
+      </button>
+    </form>
+  </div>
+</div>

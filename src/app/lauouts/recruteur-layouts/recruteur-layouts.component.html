@@ -1,0 +1,8 @@
+<!-- recruteur-layouts.component.html -->
+<div class="layout">
+  <app-navbar-recruteur (toggleSidebar)="isMobileOpen = !isMobileOpen"></app-navbar-recruteur>
+  <app-sidebar-recruteur [isMobileOpen]="isMobileOpen" (closeMobile)="isMobileOpen = false"></app-sidebar-recruteur>
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

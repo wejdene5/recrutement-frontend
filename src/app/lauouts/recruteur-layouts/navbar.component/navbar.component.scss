@@ -1,0 +1,30 @@
+.navbar {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+
+  .menu-toggle {
+    border: none;
+    background: none;
+    font-size: 20px;
+    cursor: pointer;
+    display: block;
+
+    @media (min-width: 1024px) {
+      display: none;
+    }
+  }
+
+  span {
+    font-size: 15px;
+    font-weight: 600;
+    color: #111827;
+  }
+}

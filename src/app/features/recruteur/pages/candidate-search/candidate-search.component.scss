@@ -1,0 +1,205 @@
+.candidate-search-page {
+  --ink: #1b1f2a;
+  --muted: #6b7280;
+  --paper: #faf9f7;
+  --surface: #ffffff;
+  --line: #e5e5e0;
+  --line-strong: #d4d4d0;
+  --indigo: #4338ca;
+  --indigo-dark: #362f9e;
+  --indigo-soft: #eef0fe;
+  --danger: #dc2626;
+  --danger-soft: #fef2f2;
+
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+  min-height: 100vh;
+  padding: 40px 32px 64px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.page-head {
+  margin-bottom: 24px;
+
+  .breadcrumb {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  h2 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+  }
+
+  .page-sub {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0;
+  }
+}
+
+.search-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+
+  input {
+    flex: 1;
+    padding: 13px 16px;
+    border: 1px solid var(--line-strong);
+    border-radius: 10px;
+    font-size: 14.5px;
+    background: var(--surface);
+
+    &:focus {
+      outline: none;
+      border-color: var(--indigo);
+      box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.12);
+    }
+  }
+
+  button {
+    border: none;
+    background: var(--indigo);
+    color: #fff;
+    border-radius: 10px;
+    padding: 0 22px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+
+    &:hover:not(:disabled) {
+      background: var(--indigo-dark);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.examples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 28px;
+  font-size: 13px;
+  color: var(--muted);
+
+  button {
+    border: 1px dashed var(--line-strong);
+    background: none;
+    color: var(--muted);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 12.5px;
+    cursor: pointer;
+
+    &:hover {
+      border-color: var(--indigo);
+      color: var(--indigo);
+    }
+  }
+}
+
+.error {
+  color: var(--danger);
+  font-size: 13px;
+  background: var(--danger-soft);
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+}
+
+.detected-criteria {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+
+  .detected-label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .chip {
+    font-size: 12.5px;
+    font-weight: 500;
+    background: var(--indigo-soft);
+    color: var(--indigo);
+    border-radius: 999px;
+    padding: 5px 12px;
+  }
+}
+
+.results-count {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0 0 14px;
+}
+
+.candidate-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .candidate-name {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .candidate-title {
+    font-size: 13.5px;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  .candidate-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  .candidate-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 2px;
+
+    .skill-tag {
+      font-size: 12px;
+      font-weight: 500;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 3px 9px;
+    }
+  }
+}
+
+.no-results {
+  font-size: 13.5px;
+  color: var(--muted);
+  padding: 20px 0;
+  text-align: center;
+}

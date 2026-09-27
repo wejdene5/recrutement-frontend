@@ -1,0 +1,103 @@
+.job-offers-page {
+  padding: 24px 32px;
+  background: #f5f6fa;
+  min-height: 100%;
+
+  .state-message { color: #6b7280; font-size: 14px; }
+  .error { color: #dc2626; font-size: 14px; margin-bottom: 12px; }
+}
+
+.page-header {
+  margin-bottom: 20px;
+  h1 { font-size: 26px; font-weight: 700; color: #111827; margin: 0 0 4px; }
+  .subtitle { color: #6b7280; font-size: 14px; margin: 0; }
+}
+
+.toolbar { margin-bottom: 20px; }
+
+.search-box {
+  max-width: 520px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px 14px;
+
+  svg { width: 18px; height: 18px; color: #9ca3af; flex-shrink: 0; }
+  input { border: none; outline: none; font-size: 14px; width: 100%; color: #111827; &::placeholder { color: #9ca3af; } }
+}
+
+.offers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.offer-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  &__top { display: flex; align-items: center; justify-content: space-between; }
+
+  &__avatar {
+    width: 42px; height: 42px; border-radius: 10px;
+    background: #eef0fd; color: #4f46e5;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700;
+  }
+
+  &__title { font-size: 15.5px; font-weight: 700; color: #111827; margin: 4px 0 0; }
+
+  &__meta {
+    display: flex; flex-direction: column; gap: 4px;
+    span { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #374151; }
+    svg { width: 14px; height: 14px; color: #9ca3af; flex-shrink: 0; }
+  }
+
+  &__footer {
+    display: flex; gap: 10px; margin-top: 6px;
+    padding-top: 12px; border-top: 1px solid #f3f4f6;
+
+    .btn { flex: 1; justify-content: center; }
+  }
+}
+
+.contract-badge {
+  background: #eef2ff; color: #4338ca;
+  font-size: 12px; font-weight: 600;
+  padding: 3px 10px; border-radius: 6px;
+}
+
+.skills-row { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.skill-chip {
+  background: #f3f4f6; color: #4b5563;
+  font-size: 12px; padding: 3px 9px; border-radius: 6px;
+  &--more { background: #eef0fd; color: #4f46e5; }
+}
+
+.feedback-error { color: #dc2626; font-size: 12.5px; margin: 0; }
+
+.btn {
+  border: none; border-radius: 8px; padding: 9px 14px;
+  font-size: 13.5px; font-weight: 500; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+
+  &--primary {
+    background: #4f46e5; color: #fff;
+    &:hover:not(:disabled) { background: #4338ca; }
+    &:disabled { opacity: 0.6; cursor: not-allowed; }
+  }
+
+  &--outline {
+    background: #fff; color: #374151; border: 1px solid #e5e7eb;
+    &:hover { background: #f9fafb; }
+  }
+}

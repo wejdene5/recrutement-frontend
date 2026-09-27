@@ -1,0 +1,172 @@
+
+<div class="job-offers-page" (click)="closeMenu()">
+
+  <div class="page-header">
+    <div>
+      <h1>Offres d'emploi</h1>
+      <p class="subtitle">Consultez et gérez toutes les offres d'emploi publiées.</p>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="text" placeholder="Rechercher une offre, un poste, une compétence..."
+             #searchInput (input)="onSearch(searchInput.value)" />
+    </div>
+    <button class="btn btn--outline">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+      Filtres
+    </button>
+  </div>
+
+  <p *ngIf="loading" class="state-message">Chargement...</p>
+  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+
+  
+
+  
+    <div class="stats-row">
+      
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--violet">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7h18v13H3z"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        </div>
+        <div>
+          <span class="stat-card__label">Toutes les offres</span>
+          <span class="stat-card__value">{{ totalOffers }}</span>
+          <span class="stat-card__pct">100%</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7h18v13H3z"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        </div>
+        <div>
+          <span class="stat-card__label">Publiées</span>
+          <span class="stat-card__value">{{ publishedCount }}</span>
+          <span class="stat-card__pct">{{ pct(publishedCount) }}%</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--amber">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7h18v13H3z"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        </div>
+        <div>
+          <span class="stat-card__label">Brouillons</span>
+          <span class="stat-card__value">{{ draftCount }}</span>
+          <span class="stat-card__pct">{{ pct(draftCount) }}%</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--red">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7h18v13H3z"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        </div>
+        <div>
+          <span class="stat-card__label">Fermées / Expirées</span>
+          <span class="stat-card__value">{{ closedCount }}</span>
+          <span class="stat-card__pct">{{ pct(closedCount) }}%</span>
+        </div>
+      </div>
+
+      <button class="btn btn--primary btn--create" (click)="goToCreate()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        Créer une nouvelle offre
+      </button>
+    </div>
+    <ng-container *ngIf="!loading && offers.length"></ng-container>
+
+  
+    <div class="offers-grid">
+      <div class="offer-card" *ngFor="let o of pagedOffers" (click)="goToDetail(o.id)">
+
+        <div class="offer-card__top">
+          <div class="offer-card__avatar" [ngClass]="'offer-card__avatar--' + getAvatarTheme(o.id)">
+            {{ getInitials(o.title) }}
+          </div>
+          <span class="badge" [ngClass]="statusClass(o.status)">{{ statusLabel(o.status) }}</span>
+
+          <div class="menu-wrapper" (click)="$event.stopPropagation()">
+            <button class="kebab-btn" (click)="toggleMenu(o.id, $event)">
+              <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+            </button>
+            <div class="dropdown-menu" *ngIf="openMenuId === o.id">
+               <button *ngIf="o.status === 'BROUILLON'"
+          class="publish"
+          [disabled]="publishing === o.id"
+          (click)="publishOffer(o.id)">
+    {{ publishing === o.id ? 'Publication...' : 'Publier' }}
+  </button>
+              <button (click)="goToEdit(o.id)">Modifier</button>
+              <button class="danger" (click)="askDelete(o.id)">Supprimer</button>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="offer-card__title">{{ o.title }}</h3>
+        <span class="offer-card__ref">Réf. {{ getRef(o.id) }}</span>
+
+        <div class="offer-card__meta">
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21V7l7-4 7 4v14"/><path d="M13 21v-6H9v6"/></svg>
+            {{ o.companyName }}
+          </span>
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            {{ o.location }}
+          </span>
+        </div>
+
+        <span class="contract-badge">{{ o.contractType }}</span>
+
+        <div class="skills-row" *ngIf="o.skills.length">
+          <span class="skill-chip" *ngFor="let s of o.skills.slice(0, 3)">{{ s.skillName }}</span>
+          <span class="skill-chip skill-chip--more" *ngIf="o.skills.length > 3">+{{ o.skills.length - 3 }}</span>
+        </div>
+
+        <div class="offer-card__footer">
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+            {{ o.createdAt | date:'dd MMM y' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+   
+    <div class="pagination-bar">
+      <span class="pagination-count">
+      Affichage de {{ (currentPage - 1) * pageSize + 1 }} à {{ (currentPage - 1) * pageSize + pagedOffers.length }} sur {{ filteredOffers.length }} offres
+      </span>
+
+      <div class="pagination-controls">
+        <button class="page-btn" [disabled]="currentPage === 1" (click)="prevPage()">‹</button>
+        <ng-container *ngFor="let p of pageNumbers">
+          <span class="page-ellipsis" *ngIf="p === '...'">…</span>
+          <button class="page-btn" *ngIf="p !== '...'"
+                  [class.page-btn--active]="p === currentPage"
+                  (click)="goToPage(p)">{{ p }}</button>
+        </ng-container>
+        <button class="page-btn" [disabled]="currentPage === totalPages" (click)="nextPage()">›</button>
+      </div>
+    </div>
+
+  
+
+  <p *ngIf="!loading && !offers.length" class="state-message">
+    Vous n'avez encore créé aucune Job Offer.
+  </p>
+
+  <div class="modal-overlay" *ngIf="deleteTargetId !== null" (click)="cancelDelete()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <p>Êtes-vous sûr de vouloir supprimer cette Job Offer ?</p>
+      <div class="modal__actions">
+        <button (click)="cancelDelete()">Annuler</button>
+        <button class="danger" (click)="confirmDelete()">Supprimer</button>
+      </div>
+    </div>
+  </div>
+</div>

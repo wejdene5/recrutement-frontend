@@ -1,0 +1,32 @@
+<div class="applications-page">
+  <div class="page-header">
+    <h1>Mes candidatures</h1>
+    <p class="subtitle">Suivez l'état de vos candidatures et votre score de correspondance.</p>
+  </div>
+
+  <p *ngIf="loading" class="state-message">Chargement...</p>
+  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+
+  <div class="application-row" *ngFor="let a of applications">
+    <div class="application-row__info">
+      <strong>{{ a.jobTitle }}</strong>
+      <span class="meta">{{ a.companyName }} · {{ a.location }} · {{ a.contractType }}</span>
+      <span class="meta">Postulé le {{ a.appliedAt | date:'dd MMM y' }}</span>
+    </div>
+
+    <div class="application-row__score">
+      <span class="score-value">{{ a.matchScore }}%</span>
+      <span class="score-label">match</span>
+    </div>
+
+    <span class="badge" [ngClass]="statusClass(a.status)">{{ statusLabel(a.status) }}</span>
+
+    <button class="btn btn--outline" [disabled]="withdrawingId === a.id" (click)="withdraw(a.id)">
+      {{ withdrawingId === a.id ? 'Retrait...' : 'Retirer' }}
+    </button>
+  </div>
+
+  <p *ngIf="!loading && !applications.length" class="state-message">
+    Vous n'avez encore postulé à aucune offre.
+  </p>
+</div>

@@ -1,0 +1,666 @@
+<div class="skills-page">
+
+  <!-- =========================
+       HEADER
+  ========================== -->
+  <div class="header-row">
+
+    <div class="title-block">
+      <span class="brain-icon">🧠</span>
+
+      <div>
+        <h1>Skills Matrix</h1>
+
+        <p>
+          Gérez vos compétences et votre niveau d'expertise.
+          Ces compétences sont utilisées pour le matching avec les offres d'emploi.
+        </p>
+      </div>
+    </div>
+
+    <div class="actions">
+
+      <button
+        type="button"
+        class="btn btn-outline"
+        (click)="openImportModal()">
+        ✨ Importer depuis mon CV (IA)
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="openAddModal()">
+        + Ajouter une compétence
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       ERROR
+  ========================== -->
+
+  <div
+    *ngIf="error"
+    class="error-banner">
+
+    {{ error }}
+
+  </div>
+
+
+  <!-- =========================
+       CONTENT
+  ========================== -->
+
+  <div class="content-grid">
+
+    <div class="main-col">
+
+      <!-- FILTERS -->
+
+      <div class="filters-row">
+
+        <input
+          type="text"
+          placeholder="Rechercher une compétence..."
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearchChange()"
+          class="search-input"
+        />
+
+        <select
+          [(ngModel)]="selectedCategory"
+          (ngModelChange)="onCategoryChange()"
+          class="category-select">
+
+          <option
+            *ngFor="let c of categories"
+            [value]="c">
+
+            {{ c }}
+
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- TABLE -->
+
+      <div class="table-card">
+
+        <table
+          *ngIf="!loading && filteredSkills.length"
+          class="skills-table">
+
+          <thead>
+
+            <tr>
+              <th>COMPÉTENCE</th>
+              <th>CATÉGORIE</th>
+              <th>NIVEAU</th>
+              <th>ACTIONS</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            <tr *ngFor="let skill of filteredSkills">
+
+              <td class="skill-name-cell">
+
+                <span
+                  class="skill-dot"
+                  [style.background]="colorFor(categoryFor(skill.skillName))">
+                </span>
+
+                {{ skill.skillName }}
+
+              </td>
+
+
+              <td>
+
+                <span
+                  class="badge"
+                  [style.background]="colorFor(categoryFor(skill.skillName)) + '22'"
+                  [style.color]="colorFor(categoryFor(skill.skillName))">
+
+                  {{ categoryFor(skill.skillName) }}
+
+                </span>
+
+              </td>
+
+
+              <td>
+
+                <span class="stars">
+
+                  <span
+                    *ngFor="let filled of starsArray(skill.level)"
+                    [class.filled]="filled">
+
+                    ★
+
+                  </span>
+
+                </span>
+
+                <span class="level-label">
+                  {{ levelLabel(skill.level) }}
+                </span>
+
+              </td>
+
+
+              <td class="actions-cell">
+
+                <button
+                  type="button"
+                  class="icon-btn"
+                  (click)="openEditModal(skill)">
+
+                  ✏️
+
+                </button>
+
+                <button
+                  type="button"
+                  class="icon-btn danger"
+                  (click)="deleteSkill(skill)">
+
+                  🗑️
+
+                </button>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+
+        <p
+          *ngIf="loading"
+          class="empty-state">
+
+          Chargement...
+
+        </p>
+
+
+        <p
+          *ngIf="!loading && !filteredSkills.length"
+          class="empty-state">
+
+          Aucune compétence trouvée.
+
+        </p>
+
+
+        <div class="table-footer">
+
+          {{ filteredSkills.length }} compétence(s) trouvée(s)
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =========================
+         SIDE
+    ========================== -->
+
+    <div class="side-col">
+
+      <div class="card">
+
+        <h3>
+          Résumé de vos compétences
+        </h3>
+
+        <div class="stat-row">
+
+          <span class="stat-value">
+            {{ totalSkills }}
+          </span>
+
+          <span class="stat-label">
+            Compétences totales
+          </span>
+
+        </div>
+
+
+        <div class="stat-row-split">
+
+          <div>
+
+            <span class="stat-value">
+              {{ categoryCount }}
+            </span>
+
+            <span class="stat-label">
+              Catégories
+            </span>
+
+          </div>
+
+
+          <div>
+
+            <span class="stat-value accent">
+              {{ averageLevelPercent }}%
+            </span>
+
+            <span class="stat-label">
+              Niveau moyen global
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>
+          Compétences par catégorie
+        </h3>
+
+        <div class="donut-row">
+
+          <div
+            class="donut"
+            [style.background]="donutGradient">
+          </div>
+
+          <ul class="legend">
+
+            <li *ngFor="let stat of categoryStats">
+
+              <span
+                class="dot"
+                [style.background]="stat.color">
+              </span>
+
+              {{ stat.category }} ({{ stat.count }})
+
+            </li>
+
+          </ul>
+
+        </div>
+
+      </div>
+
+
+      <div class="tip-card">
+
+        💡 Conseil :
+        Ajoutez plus de compétences pour améliorer votre matching
+        avec les offres d'emploi.
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     MODAL AJOUT / MODIFICATION
+===================================================== -->
+
+<div
+  class="modal-overlay"
+  *ngIf="showSkillModal"
+  (click)="closeSkillModal()">
+
+  <div
+    class="modal"
+    (click)="$event.stopPropagation()">
+
+    <h2>
+      {{ editingSkill
+        ? 'Modifier la compétence'
+        : 'Ajouter une compétence' }}
+    </h2>
+
+
+    <label>
+      Nom
+    </label>
+
+    <input
+      type="text"
+      [(ngModel)]="formSkillName"
+      placeholder="ex: Java"
+    />
+
+
+    <label>
+      Niveau
+    </label>
+
+    <select
+      [(ngModel)]="formLevel">
+
+      <option
+        *ngFor="let l of levels"
+        [value]="l">
+
+        {{ levelLabel(l) }}
+
+      </option>
+
+    </select>
+
+
+    <div class="modal-actions">
+
+      <button
+        type="button"
+        class="btn btn-outline"
+        (click)="closeSkillModal()">
+
+        Annuler
+
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="saveSkill()">
+
+        Enregistrer
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     MODAL IMPORT CV
+===================================================== -->
+
+<div
+  class="modal-overlay cv-overlay"
+  *ngIf="showImportModal"
+  (click)="closeImportModal()">
+
+  <div
+    class="modal cv-modal"
+    (click)="$event.stopPropagation()">
+
+
+    <!-- HEADER -->
+
+    <div class="cv-modal-header">
+
+      <div class="cv-modal-title">
+
+        <span class="cv-modal-icon">
+          ✨
+        </span>
+
+        <div>
+
+          <h2>
+            Importer depuis mon CV
+          </h2>
+
+          <p>
+            L'IA analyse votre CV et détecte automatiquement
+            vos compétences.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="cv-modal-close"
+        (click)="closeImportModal()">
+
+        ×
+
+      </button>
+
+    </div>
+
+
+
+    <!-- =========================
+         CV DROPZONE
+    ========================== -->
+
+    <div
+      class="cv-dropzone"
+      [class.dragging]="isDragging"
+      [class.has-file]="selectedFile"
+
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)"
+      (drop)="onFileDrop($event)">
+
+
+      <!-- INPUT NATIF -->
+
+      <input
+        #fileInput
+        type="file"
+        accept=".pdf,application/pdf"
+        class="cv-file-input"
+        (change)="onFileSelected($event)"
+      />
+
+
+      <!-- BOUTON CHOISIR -->
+
+      <button
+        *ngIf="!selectedFile"
+        type="button"
+        class="cv-browse-btn"
+        (click)="fileInput.click(); $event.stopPropagation()">
+
+        📁 Choisir mon CV
+
+      </button>
+
+
+      <!-- TEXTE -->
+
+      <ng-container *ngIf="!selectedFile">
+
+        <div class="cv-dropzone-icon">
+          📄
+        </div>
+
+        <p class="cv-dropzone-title">
+          Glissez votre CV ici
+        </p>
+
+        <p class="cv-dropzone-sub">
+          ou cliquez sur "Choisir mon CV" · PDF uniquement
+        </p>
+
+      </ng-container>
+
+
+      <!-- FICHIER SÉLECTIONNÉ -->
+
+      <div
+        class="cv-file-pill"
+        *ngIf="selectedFile">
+
+        <span class="cv-file-icon">
+          📄
+        </span>
+
+
+        <div class="cv-file-info">
+
+          <strong>
+            {{ selectedFile.name }}
+          </strong>
+
+          <span>
+            {{ (selectedFile.size / 1024 / 1024) | number:'1.1-2' }} Mo
+          </span>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="cv-file-remove"
+          title="Retirer le fichier"
+          (click)="removeSelectedFile(); $event.stopPropagation()">
+
+          ✕
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- =========================
+         ANALYSER
+    ========================== -->
+
+    <button
+      type="button"
+      class="btn btn-primary cv-analyze-btn"
+
+      [disabled]="!selectedFile || importing"
+
+      (click)="analyzeCv()">
+
+      <span
+        *ngIf="importing"
+        class="spinner">
+      </span>
+
+      {{ importing
+        ? 'Analyse en cours...'
+        : 'Analyser le CV' }}
+
+    </button>
+
+
+
+    <!-- =========================
+         COMPÉTENCES DÉTECTÉES
+    ========================== -->
+
+    <div
+      *ngIf="detectedSkills.length > 0"
+      class="detected-list">
+
+      <h4>
+
+        Compétences détectées
+
+        <span class="detected-count">
+          {{ detectedSkills.length }}
+        </span>
+
+      </h4>
+
+
+      <div
+        class="detected-row"
+        *ngFor="let s of detectedSkills">
+
+        <label class="detected-checkbox">
+
+          <input
+            type="checkbox"
+            [(ngModel)]="s.selected"
+          />
+
+          <span>
+            {{ s.name }}
+          </span>
+
+        </label>
+
+
+        <select
+          [(ngModel)]="s.level">
+
+          <option
+            *ngFor="let l of levels"
+            [value]="l">
+
+            {{ levelLabel(l) }}
+
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- =========================
+         ACTIONS
+    ========================== -->
+
+    <div class="modal-actions cv-actions">
+
+      <button
+        type="button"
+        class="btn btn-outline"
+        (click)="closeImportModal()">
+
+        Annuler
+
+      </button>
+
+
+      <button
+        *ngIf="detectedSkills.length > 0"
+        type="button"
+        class="btn btn-primary"
+        (click)="confirmImport()">
+
+        Confirmer et enregistrer
+
+      </button>
+
+    </div>
+
+
+  </div>
+
+</div>

@@ -1,0 +1,30 @@
+
+<div class="dashboard">
+  <h1>Tableau de bord</h1>
+
+  <p *ngIf="loading" class="state-message">Chargement...</p>
+  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+
+  <div class="stats-grid" *ngIf="stats">
+    <div class="stat-card">
+      <span class="stat-card__label">Total des offres</span>
+      <span class="stat-card__value">{{ stats.totalOffers }}</span>
+    </div>
+    <div class="stat-card stat-card--active">
+      <span class="stat-card__label">Offres actives</span>
+      <span class="stat-card__value">{{ stats.activeOffers }}</span>
+    </div>
+    <div class="stat-card stat-card--inactive">
+      <span class="stat-card__label">Offres inactives</span>
+      <span class="stat-card__value">{{ stats.inactiveOffers }}</span>
+    </div>
+  </div>
+
+  <div class="company-card" *ngIf="stats">
+    <img *ngIf="stats.companyLogoUrl" [src]="stats.companyLogoUrl" alt="" />
+    <div>
+      <h3>{{ stats.companyName }}</h3>
+      <p>Votre entreprise</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+<aside class="sidebar" [class.sidebar-open]="isMobileOpen">
+
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <svg width="26" height="26" fill="none" stroke="white" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+      </svg>
+    </div>
+    <span class="sidebar-title">Espace Candidat</span>
+
+    <button type="button" class="sidebar-close" (click)="closeMobile.emit()">✕</button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a *ngFor="let item of menuItems"
+       [routerLink]="item.route"
+       routerLinkActive="active-link"
+       (click)="onLinkClick()"
+       class="sidebar-link">
+      {{ item.label }}
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button type="button" class="logout-btn" (click)="logout()">
+      Déconnexion
+    </button>
+  </div>
+
+</aside>

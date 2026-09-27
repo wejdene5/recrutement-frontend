@@ -1,0 +1,29 @@
+<div class="dashboard-page">
+
+  <div class="dashboard-header">
+    <h1>Tableau de bord</h1>
+    <p *ngIf="manager">Bienvenue, {{ manager.name }} 👋</p>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <span class="stat-value">{{ stats.totalRecruteurs }}</span>
+      <span class="stat-label">Recruteurs</span>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-value">{{ stats.totalOffers }}</span>
+      <span class="stat-label">Offres publiées</span>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-value">{{ stats.totalApplications }}</span>
+      <span class="stat-label">Candidatures reçues</span>
+    </div>
+  </div>
+
+  <div class="empty-state" *ngIf="stats.totalOffers === 0">
+    <p>Aucune donnée pour le moment. Commence par ajouter des recruteurs ou publier une offre.</p>
+  </div>
+
+</div>

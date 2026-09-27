@@ -1,0 +1,26 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 60px;
+  padding: 0 20px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+
+  @media (max-width: 768px) {
+    display: block;
+  }
+}
+
+.navbar-title {
+  font-weight: 600;
+  font-size: 16px;
+}

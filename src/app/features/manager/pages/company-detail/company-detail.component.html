@@ -1,0 +1,97 @@
+
+
+<div class="company-detail">
+  <button class="back-link" (click)="goBack()">
+    <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12.5 15.5L7 10l5.5-5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Retour aux entreprises
+  </button>
+
+  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+  <p *ngIf="loading" class="state-message">Chargement...</p>
+
+  <div class="company-detail__panel" *ngIf="!loading && company as c">
+    <div class="company-detail__header">
+      <div class="company-detail__identity">
+        <div class="company-detail__avatar" [style.background]="avatarColor(c.name)">
+          {{ initials(c.name) }}
+        </div>
+        <div>
+          <h2>{{ c.name }}</h2>
+          <div class="company-detail__badges">
+            <span class="tag">{{ c.companySize }}</span>
+            <span class="badge" [class.badge--active]="c.status === 'ACTIVE'">
+              {{ c.status }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="company-detail__actions">
+        <button class="btn btn--secondary" (click)="goToEdit()">Modifier</button>
+        <button class="btn btn--danger" (click)="deleteCompany()">Supprimer</button>
+      </div>
+    </div>
+
+    <div class="company-detail__grid">
+      <div class="info-card">
+        <h3>Informations générales</h3>
+
+        <div class="info-row" *ngIf="c.description">
+          <span class="info-row__label">Description</span>
+          <span class="info-row__value">{{ c.description }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-row__label">Adresse</span>
+          <span class="info-row__value">{{ c.address || '—' }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-row__label">Ville / Pays</span>
+          <span class="info-row__value">{{ c.city }}, {{ c.country }}</span>
+        </div>
+
+        <div class="info-row" *ngIf="c.websiteUrl">
+          <span class="info-row__label">Site web</span>
+          <a class="info-row__value info-row__value--link" [href]="c.websiteUrl" target="_blank">
+            {{ c.websiteUrl }}
+          </a>
+        </div>
+
+        <div class="info-row">
+          <span class="info-row__label">Manager</span>
+          <span class="info-row__value">{{ c.managerName }} — {{ c.managerEmail }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-row__label">Créée le</span>
+          <span class="info-row__value">{{ c.createdAt | date:'dd MMMM y' }}</span>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <h3>Recruteurs ({{ c.recruteurs.length }})</h3>
+
+        <div class="recruteur-list" *ngIf="c.recruteurs.length; else noRecruteurs">
+          <div class="recruteur-item" *ngFor="let r of c.recruteurs">
+            <div class="recruteur-item__avatar">{{ r.firstName.charAt(0) }}{{ r.lastName.charAt(0) }}</div>
+            <div>
+              <p class="recruteur-item__name">{{ r.firstName }} {{ r.lastName }}</p>
+              <p class="recruteur-item__meta">{{ r.position || 'Recruteur' }} · {{ r.email }}</p>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #noRecruteurs>
+          <p class="state-message state-message--inline">Aucun recruteur pour le moment.</p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <p *ngIf="!loading && !company && !errorMessage" class="state-message">
+    Entreprise introuvable.
+  </p>
+</div>

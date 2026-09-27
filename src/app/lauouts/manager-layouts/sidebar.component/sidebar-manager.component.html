@@ -1,0 +1,12 @@
+<aside class="sidebar" [class.mobile-open]="isMobileOpen">
+  <div class="sidebar-header">
+    <span class="logo">RecrutApp</span>
+  </div>
+  <nav class="sidebar-nav">
+    <a *ngFor="let item of menuItems" routerLinkActive="active" class="nav-item" style="cursor: pointer" (click)="onLinkClick(item, $event)">
+      {{ item.label }}
+    </a>
+  </nav>
+  <button class="logout-btn" (click)="logout()">Déconnexion</button>
+</aside>
+<div class="sidebar-overlay" *ngIf="isMobileOpen" (click)="closeMobile.emit()"></div>

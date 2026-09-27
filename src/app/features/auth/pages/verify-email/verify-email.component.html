@@ -1,0 +1,25 @@
+<div class="verify-email-container">
+
+  <h2 *ngIf="loading">
+    Vérification en cours...
+  </h2>
+
+  <div *ngIf="!loading && success">
+    <h2>Email vérifié avec succès ✅</h2>
+    <p>{{ message }}</p>
+
+    <a routerLink="/login">
+      Se connecter
+    </a>
+  </div>
+
+  <div *ngIf="!loading && !success">
+    <h2>Échec de la vérification ❌</h2>
+    <p>{{ message }}</p>
+
+    <a routerLink="/login">
+      Retour à la connexion
+    </a>
+  </div>
+
+</div>
